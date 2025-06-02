@@ -7,12 +7,75 @@
 	<link rel="stylesheet" href="brick.css">
 </head>
 <body>
+	<img src="Shaved Ice/background.png" alt="배경" class="background">
+
+	<div class="main_page">
+		<div class="logo">
+            <img src="Shaved Ice/logo/heart.png" alt="하트" id="logo-heart"/>
+            <img src="Shaved Ice/logo/circle.png" alt="원" id="logo-circle"/>
+            <img src="Shaved Ice/logo/shaved_ice.png" alt="title" id="logo-shavedice"/>
+        </div>
+        <div class="main-button">
+            <button alt="How" onclick="showMenu('.How-to-Play')"><span>How to Play</span></button>
+            <button alt="Recipe" onclick="showMenu('.Recipe')"><span>Recipe</span></button>
+            <button alt="Start" onclick="showMenu('.Start')"><span>Start</span></button>
+        </div>
+        <button id="setting" alt="Setting" onclick="showMenu('.Setting')"><span>Setting</span></button>
+	</div>
+
+
+	<div class="menu How-to-Play">
+        <img src="Shaved Ice/button/back.png" alt="돌아가기" class="back-button" onclick="goBackHome()"/>
+        <img src="Shaved Ice/logo/how_to_play.png" alt="게임 방법" class="menu-logo"/>
+    </div>
+
+    <div class="menu Recipe">
+        <img src="Shaved Ice/button/back.png" alt="돌아가기" class="back-button" onclick="goBackHome()"/>
+        <img src="Shaved Ice/logo/recipe.png" alt="게임 방법" class="menu-logo"/>
+    </div>
+
+    <div class="menu Start">
+        <img src="Shaved Ice/button/back.png" alt="돌아가기" class="back-button" onclick="goBackHome()"/>
+        <img src="Shaved Ice/logo/start.png" alt="게임 방법" class="menu-logo"/>
+
+         <div class = "level-buttons">
+			<img src="Shaved Ice/logo/1.png" class="level-btn" id="level1" alt="1단계" onclick="goToLevel1()">
+			<img src="Shaved Ice/logo/2.png" class="level-btn" id="level2" alt="2단계" onclick="goToLevel2()">
+			<img src="Shaved Ice/logo/3.png" class="level-btn" id="level3" alt="3단계" onclick="goToLevel3()">
+		</div>
+
+    </div>
+
+    <div class="menu Setting">
+        <img src="Shaved Ice/button/back.png" alt="환경설정" class="back-button" onclick="goBackHome()"/>
+        <img src="Shaved Ice/logo/setting.png" alt="게임 방법" class="menu-logo"/>
+
+        <div class="ball-container">
+			<img src="Shaved Ice/icon/ball.png" alt="ball" class="ball-icon">
+		</div>
+
+    	<div class="setting-option">
+      		<label for ="sizeRange">사이즈</label>
+      		<input type="range" id="sizeRange" min="10" max="30" value="30">
+      		<p>Size: <output id="size-output" for="sizeRange"></output></p>
+    	</div>
+
+    	<div class="setting-option">
+			<label for="speedRange">속도</label>
+			<input type="range" id="speedRange" min="2" max="15" value="4">
+			<p>Speed: <output id="speed-output" for="speedRange"></output></p>
+		</div>
+
+    </div>
+
+
 	<div class="game">
 		<canvas id="canvas" width="700" height="600"></canvas>
 		<div id="gameover" class="game-over">GAME OVER</div>
 		<div id="win" class="game-over">YOU WIN</div>
 		<button id="startBtn">시작</button>
 	</div>
+
 	<script src="brick.js"></script>
 </body>
 </html>

@@ -1,6 +1,9 @@
 const canvas = document.getElementById("canvas");
 const cvs = canvas.getContext("2d");
 
+const ballImage = new Image();
+ballImage.src = "Shaved Ice/icon/ball.png";
+
 let ball, paddle, bricks;
 let rPressed = false;
 let lPressed = false;
@@ -144,14 +147,18 @@ function collisionCheck() {
   }
 }
 
-
 function drawBall() {
-  cvs.beginPath();
-  cvs.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-  cvs.fillStyle = "red";
-  cvs.fill();
-  cvs.closePath();
+  const imgSize = ball.radius * 2; // 지름 기준 크기
+  cvs.drawImage(ballImage, ball.x - ball.radius, ball.y - ball.radius, imgSize, imgSize);
 }
+
+// function drawBall() {
+//   cvs.beginPath();
+//   cvs.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+//   cvs.fillStyle = "red";
+//   cvs.fill();
+//   cvs.closePath();
+// }
 
 function drawPaddle() {
   cvs.beginPath();
@@ -190,15 +197,35 @@ function draw() {
   drawPaddle();
   collisionCheck();
 
+  // 벽과의 충돌 처리
   if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
     ball.dx = -ball.dx;
   }
   if (ball.y + ball.dy < ball.radius) {
     ball.dy = -ball.dy;
-  } else if (ball.y + ball.dy > canvas.height - ball.radius - paddle.height - 10) {
-    if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
-      ball.dy = -ball.dy;
-    } else {
+  }
+
+  // 바닥과의 충돌 및 패들 충돌 처리
+  else if (ball.y + ball.dy > canvas.height - ball.radius - paddle.height - 10) {
+    const paddleTop = canvas.height - paddle.height - 10;
+    const paddleBottom = canvas.height - 10;
+    const paddleLeft = paddle.x;
+    const paddleRight = paddle.x + paddle.width;
+
+    const nextX = ball.x + ball.dx;
+    const nextY = ball.y + ball.dy;
+
+    // 패들과 충돌한 경우
+    if (
+      nextY + ball.radius >= paddleTop &&
+      nextY + ball.radius <= paddleBottom &&
+      nextX > paddleLeft &&
+      nextX < paddleRight
+    ) {
+      ball.dy = -Math.abs(ball.dy); // 위쪽으로 튕기기
+    }
+    // 패들과 충돌하지 못하고 바닥에 닿은 경우
+    else if (nextY + ball.radius > canvas.height) {
       gameOver();
       return;
     }
@@ -246,3 +273,65 @@ function win() {
   document.getElementById("win").style.display = "block";
   document.getElementById("startBtn").style.display = "block";
 }
+
+function showMenu(menuClass) {
+    document.querySelectorAll('.menu').forEach(menu => menu.style.display = 'none'); //모든 버튼창 안보이게
+    document.querySelector('.main_page').style.display = 'none'; //홈화면 안보이게
+    document.querySelector(menuClass).style.display = 'block'; //선택 창만 보이게
+}
+
+function goBackHome() {
+    document.querySelectorAll('.menu').forEach(menu => menu.style.display = 'none'); //모든 메뉴 숨기기
+    document.querySelector('.main_page').style.display = 'block'; //홈화면 보이기
+}
+
+function goToLevel1() {
+  document.querySelector('.Start').style.display = 'none';
+  document.querySelector('.game').style.display = 'block';
+
+  document.getElementById("startBtn").style.display = "block";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const sizeSlider = document.getElementById("sizeRange");
+  const sizeOutput = document.getElementById("size-output");
+
+  const speedSlider = document.getElementById("speedRange");
+  const speedOutput = document.getElementById("speed-output");
+
+  const ballIcon = document.querySelector(".ball-icon");
+
+  function applySize(value) {
+    sizeOutput.textContent = value;
+    const radius = parseInt(value);
+    if (ball) ball.radius = radius;
+    if (ballIcon) {
+      ballIcon.style.width = radius * 2 + "px";
+      ballIcon.style.height = radius * 2 + "px";
+    }
+  }
+
+  function applySpeed(value) {
+    speedOutput.textContent = value;
+    const speed = parseInt(value);
+    if (ball) {
+      const angle = Math.atan2(ball.dy, ball.dx);
+      ball.dx = speed * Math.cos(angle);
+      ball.dy = -Math.abs(speed * Math.sin(angle)); // 항상 위로
+    }
+  }
+
+  applySize(sizeSlider.value);
+  applySpeed(speedSlider.value);
+
+  sizeSlider.addEventListener("input", () => applySize(sizeSlider.value));
+  speedSlider.addEventListener("input", () => applySpeed(speedSlider.value));
+
+  // start 오버라이드
+  const originalStart = start;
+  start = function () {
+    applySize(sizeSlider.value);
+    applySpeed(speedSlider.value);
+    originalStart();
+  };
+});
