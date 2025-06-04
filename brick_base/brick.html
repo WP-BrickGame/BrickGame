@@ -65,6 +65,9 @@
 				<input type="range" id="speedRange" min="2" max="15" value="4">
 			</div>
 		</div>
+		<div class="setting-option">
+			<label><input type="checkbox" id="bgm-check">배경 음악 켜기</label>
+    	</div>
     </div>
 
 
@@ -76,5 +79,8 @@
 	</div>
 
 	<script src="brick.js"></script>
+
+	<audio id="main-bgm" src="sounds/mainBGM.mp3" autoplay loop muted></audio>
+	<audio id="button-sound" src="sounds/buttonPressed.mp3"></audio>
 </body>
 </html>
