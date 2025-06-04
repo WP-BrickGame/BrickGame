@@ -7,8 +7,9 @@ let life = 3;
 // 돈
 let money = 0;
 
-// 현재 주문
+// 현재 주문 메뉴
 var order;
+let matchedIngredients = new Set();
 
 var ingNum = 0;
 
@@ -42,10 +43,10 @@ const iconSpacing = 15;
 
 const barSize = 900;
 
-const ImgPath = '../../../imgs/'
+const ImgPath = '../../../imgs/';
 const brickPath = ImgPath + 'brick/';
-const pngPath = ImgPath + 'png/'
-const imgExt = '.png'
+const pngPath = ImgPath + 'png/';
+const imgExt = '.png';
 const ingredients = ['none', 'ice', 'icecream_van', 'icecream_tea', 
                     'mango', 'strawberry', 'greentea',
                     'sirup_milk', 'sirup_str', 'sirup_man',
@@ -67,6 +68,21 @@ window.addEventListener("load", () => {
   ball.x = canvas.width / 2
 });
 window.addEventListener("resize", resizeCanvas);
+
+const ingredientNoNone = ['ice', 'icecream_van', 'icecream_tea', 
+                          'mango', 'strawberry', 'greentea',
+                          'sirup_milk', 'sirup_str', 'sirup_man',
+                           ];
+const itemPath = '../../../imgs/png/';
+itemImgs = ingredientNoNone.map( name => {
+  const img = new Image();
+  img.src = itemPath + name + imgExt;
+  return img;
+}
+)
+
+let topBrickImg = null;
+let topBrickTimer = null;
 
 function init() {
   ball = {
@@ -106,21 +122,21 @@ function init() {
   )
 
   menu = [
-    {
-      name: 'redbean',
-      ingredient: ['ice', 'redbean', 'sirup_milk'],
-      cost: 100
-    },
-    {
-      name: 'injeolmi',
-      ingredient: ['ice', 'injeolmi', 'sirup_milk'],
-      cost: 100
-    },
-    {
-      name: 'choco',
-      ingredient: ['ice', 'icecream_cho', 'sirup_choco'],
-      cost: 100
-    },
+    // {
+    //   name: 'redbean',
+    //   ingredient: ['ice', 'redbean', 'sirup_milk'],
+    //   cost: 100
+    // },
+    // {
+    //   name: 'injeolmi',
+    //   ingredient: ['ice', 'injeolmi', 'sirup_milk'],
+    //   cost: 100
+    // },
+    // {
+    //   name: 'choco',
+    //   ingredient: ['ice', 'icecream_cho', 'sirup_choco'],
+    //   cost: 100
+    // },
     {
       name: 'strawberry',
       ingredient: ['ice', 'icecream_van', 'strawberry', 'sirup_str'],
@@ -171,6 +187,7 @@ function init() {
     }
   ];
 
+  newMenu();
   isGameover = false;
   document.getElementById("gameover").style.display = "none";
   document.getElementById("win").style.display = "none";
@@ -244,7 +261,12 @@ function collisionCheck() {
           }
 
           checkMenu(b);
+          checkMenu(b);
           b.status = 0;
+          console.log(b.ingredient+"닿음");
+          console.log(matchedIngredients);
+
+          showTopBrick(itemImgs[b.imgIdx-1]); //닿은 블록의 이미지를 전달
 
           if (checkWin()) {
             win();
@@ -332,7 +354,11 @@ function draw() {
   drawBall();
   drawPaddle();
   collisionCheck();
-
+  if(topBrickImg){
+    const topX = canvas.width / 2 - brickWidth / 2;
+    const topY = 120; // 화면 상단 위치
+    cvs.drawImage(topBrickImg, topX, topY, 80, 80);
+  }
   if (isGameover) return;     // 남은 하트 한 개 없애려고 여기로 옮김
 
   if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
@@ -407,21 +433,31 @@ function win() {
 }
 
 function newMenu() {
-  order = Math.floor(Math.random()*6);
+  order = Math.floor(Math.random()*menu.length);
+  matchedIngredients.clear();
+  console.log(menu[order]);
+  console.log(menu[order].ingredient);
 }
 
 function checkMenu(brick) {
-  menu[order].ingredient.forEach(ing => {
-    if (brick.ingredient == ing) {
-      ingNum++;
-    }
-  });
+  //현재 메뉴의 재료 배열
+  const ingredients = menu[order].ingredient;
 
-  if (ingNum == 4) {
-    ingNum = 0;
+  if(ingredients.includes(brick.ingredient) && !matchedIngredients.has(brick)){
+    matchedIngredients.add(brick.ingredient);
+  }
+  if(matchedIngredients.size === ingredients.length){
     money += menu[order].cost;
     newMenu();
   }
+}
+function showTopBrick(img){
+  topBrickImg = img;
+  if (topBrickTimer) clearTimeout(topBrickTimer);
+  topBrickTimer = setTimeout(() => {
+    topBrickImg = null;
+    topBrickTimer = null;
+  }, 1000);
 }
 
 const lifeImg = new Image();
