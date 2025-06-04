@@ -141,18 +141,18 @@ function init() {
 
   menu_korean = [
     {
-      name: '딸기빙수',
-      ingredient: ['얼음', '바닐라아이스크림', '딸기'],
+      name: '팥빙수',
+      ingredient: ['얼음', '팥', '연유'],
       cost: 100
     },
     {
-      name: '망고빙수',
-      ingredient: ['얼음', '바닐라아이스크림', '망고'],
+      name: '인절미 빙수',
+      ingredient: ['얼음', '인절미', '연유'],
       cost: 100
     },
     {
-      name: '녹차빙수',
-      ingredient: ['얼음', '녹차아이스크림', '녹찻잎'],
+      name: '초코 빙수',
+      ingredient: ['얼음', '초코 아이스크림', '초코시럽'],
       cost: 100
     }
   ];
