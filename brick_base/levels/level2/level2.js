@@ -27,7 +27,7 @@ let rPressed = false;
 let lPressed = false;
 let isGameover = false;
 
-const topSpace = 70;
+const topSpace = 120;
 
 const brickRows = 4;
 const brickCols = 14;
@@ -107,7 +107,7 @@ function init() {
     for (let r = 0; r < brickRows; r++) {
       const color = rowColors[r % rowColors.length];
 
-      let imgIdx = Math.floor(Math.random()*10)
+      let imgIdx = Math.floor(Math.random()*(ingredients.length))
       //재료마다 점수 조정할 때 사용하면 좋을 거 같음
       const points = color === 'red' ? 40 : color === 'blue' ? 30 : color === 'yellow' ? 20 : color === 'green' ? 10 : 5;
       bricks[c][r] = { x: 0, y: 0, status: 1, color: color, points: points, imgIdx: imgIdx, ingredient: ingredients[imgIdx] };
@@ -297,7 +297,7 @@ function drawBricks() {
     for (let r = 0; r < brickRows; r++) {
       if (bricks[c][r].status === 1) {
         const brickX = c * (brickWidth + brickPadding) + brickLeft;
-        const brickY = r * (brickHeight + brickPadding) + brickTop * 1.5;
+        const brickY = r * (brickHeight + brickPadding) + topSpace + 12.5;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
 
@@ -382,8 +382,8 @@ function gameOver() {
   }
   draw();       // 왜 남은 하트 한 개 안 없어짐? ㅇㅎ
   document.getElementById("gameover").style.display = "block";
-  document.getElementById("gameover").style.width = canvas.width - topSpace/2 + 'px';
-  document.getElementById("gameover").style.height = canvas.height - topSpace/2 + 'px';
+  document.getElementById("gameover").style.width = canvas.width - 35 + 'px';
+  document.getElementById("gameover").style.height = canvas.height - 35 + 'px';
   gameStarted = false;
 }
 
@@ -495,7 +495,7 @@ function drawBackground() {
   cvs.drawImage(
     backgroundImg,
     0,
-    70,
+    topSpace,
     canvas.width,
     canvas.height - topSpace
   );
