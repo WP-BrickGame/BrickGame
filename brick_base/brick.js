@@ -286,10 +286,15 @@ function goBackHome() {
 }
 
 function goToLevel1() {
-  document.querySelector('.Start').style.display = 'none';
-  document.querySelector('.game').style.display = 'block';
+  location.href='./levels/level1/level1.html';
+}
 
-  document.getElementById("startBtn").style.display = "block";
+function goToLevel2() {
+  location.href='./levels/level2/level2.html';
+}
+
+function goToLevel3() {
+  location.href='./levels/level3/level3.html';
 }
 
 document.addEventListener("DOMContentLoaded", function () {

@@ -10,7 +10,7 @@ let money = 0;
 // 현재 주문
 var order;
 
-var ingIdx = 0;
+var ingNum = 0;
 
 // 캔버스
 const canvas = document.getElementById("canvas");
@@ -19,18 +19,28 @@ const cvs = canvas.getContext("2d");
 let ball, paddle, bricks;
 let brickImgs;
 let menu;
+let menu_korean;
 
+let gameStarted = false;
 let rPressed = false;
 let lPressed = false;
 let isGameover = false;
 
-const brickRows = 10;
-const brickCols = 10;
-const brickWidth = 68;
-const brickHeight = 30;
+const topSpace = 70;
+
+const brickRows = 4;
+const brickCols = 14;
+const brickWidth = 68 * 1.7;
+const brickHeight = 30 * 1.7;
 const brickPadding = 2;
-const brickTop = 30;
-const brickLeft = 0;
+const brickTop = 55;
+const brickLeft = brickWidth * 0.2;
+
+const heartSize = 50;
+const moneySize = 50;
+const iconSpacing = 15;
+
+const barSize = 900;
 
 const ImgPath = '../../../imgs/'
 const brickPath = ImgPath + 'brick/';
@@ -40,6 +50,23 @@ const ingredients = ['none', 'ice', 'icecream_van', 'icecream_tea',
                     'mango', 'strawberry', 'greentea',
                     'sirup_milk', 'sirup_str', 'sirup_man',
                     ];
+const backgroundImg = new Image();
+backgroundImg.src = ImgPath + 'background.png';
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth - 1;
+  canvas.height = window.innerHeight - 1;
+
+  drawBackground();
+}
+
+// 처음 로드할 때, 창 크기 변경할 때 캔버스 크기 조절
+window.addEventListener("load", () => {
+  resizeCanvas()
+  paddle.x = canvas.width / 2 - (canvas.width / 6) / 2;
+  ball.x = canvas.width / 2
+});
+window.addEventListener("resize", resizeCanvas);
 
 function init() {
   ball = {
@@ -53,7 +80,7 @@ function init() {
   paddle = {
     height: 10,
     width: canvas.width / 6,
-    x: (canvas.width - canvas.width/6) /2
+    x: canvas.width / 2
   };
 
   const rowColors = ['red', 'yellow', 'green', 'blue', 'purple'];
@@ -111,16 +138,50 @@ function init() {
     }
   ];
 
+  menu_korean = [
+    {
+      name: '팥빙수',
+      ingredient: ['얼음', '팥', '연유'],
+      cost: 100
+    },
+    {
+      name: '인절미빙수',
+      ingredient: ['얼음', '인절미', '연유'],
+      cost: 100
+    },
+    {
+      name: '초코빙수',
+      ingredient: ['얼음', '초코아이스크림', '초코시럽'],
+      cost: 100
+    },
+    {
+      name: '딸기빙수',
+      ingredient: ['얼음', '바닐라아이스크림', '딸기', '딸기시럽'],
+      cost: 100
+    },
+    {
+      name: '망고빙수',
+      ingredient: ['얼음', '바닐라아이스크림', '망고', '망고시럽'],
+      cost: 100
+    },
+    {
+      name: '녹차빙수',
+      ingredient: ['얼음', '녹차아이스크림', '녹찻잎', '연유'],
+      cost: 100
+    }
+  ];
+
   isGameover = false;
   document.getElementById("gameover").style.display = "none";
   document.getElementById("win").style.display = "none";
+
+  newMenu();
 }
 
 init();
 
 document.addEventListener("keydown", keyDown, false);
 document.addEventListener("keyup", keyUp, false);
-document.getElementById("startBtn").addEventListener("click", start);
 
 function keyDown(e) {
   if (e.key === "Right" || e.key === "ArrowRight") {
@@ -128,6 +189,10 @@ function keyDown(e) {
   } else if (e.key === "Left" || e.key === "ArrowLeft") {
     lPressed = true;
   }
+  else if (!gameStarted && e.code === "Space") {
+      e.preventDefault(); // 스크롤 방지 (중요)
+      start();
+    }
 }
 
 function keyUp(e) {
@@ -178,7 +243,7 @@ function collisionCheck() {
             ball.dy = -ball.dy;
           }
 
-          // checkMenu(b);
+          checkMenu(b);
           b.status = 0;
 
           if (checkWin()) {
@@ -240,7 +305,7 @@ function drawBricks() {
     for (let r = 0; r < brickRows; r++) {
       if (bricks[c][r].status === 1) {
         const brickX = c * (brickWidth + brickPadding) + brickLeft;
-        const brickY = r * (brickHeight + brickPadding) + brickTop;
+        const brickY = r * (brickHeight + brickPadding) + brickTop * 1.5;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
 
@@ -259,8 +324,10 @@ function drawBricks() {
 function draw() {
   cvs.clearRect(0, 0, canvas.width, canvas.height);
 
-  drawLife()
-  drawMoney()
+  drawBackground();
+  drawLife();
+  drawMenu();
+  drawMoney();
   drawBricks();
   drawBall();
   drawPaddle();
@@ -298,26 +365,28 @@ function draw() {
 }
 
 function start() {
+  gameStarted = true;
+  life = 3;
   if (isGameover) {
     init();
   }
-  document.getElementById("startBtn").style.display = "none";
   draw();
 }
 
 function gameOver() {
+  console.log('게임오버 호출')
   isGameover = true;
   if (--life != 0) {
+    console.log('life' + life);
     isGameover = false;
     ball.x = canvas.width / 2;
     ball.y = canvas.height - 30;
     paddle.x = (canvas.width - canvas.width/6) /2
     return;
   }
-  console.log('life' + life);
   draw();       // 왜 남은 하트 한 개 안 없어짐? ㅇㅎ
   document.getElementById("gameover").style.display = "block";
-  document.getElementById("startBtn").style.display = "block";
+  gameStarted = false;
 }
 
 function checkWin() {
@@ -342,11 +411,14 @@ function newMenu() {
 }
 
 function checkMenu(brick) {
-  if (brick.ingredient == menu[order].ingredient[ingIdx]) {
-    ingIdx++;
-  }
-  if (ingIdx == 4) {
-    ingIdx = 0;
+  menu[order].ingredient.forEach(ing => {
+    if (brick.ingredient == ing) {
+      ingNum++;
+    }
+  });
+
+  if (ingNum == 4) {
+    ingNum = 0;
     money += menu[order].cost;
     newMenu();
   }
@@ -359,31 +431,63 @@ const moneyImg = new Image();
 moneyImg.src = ImgPath + 'icon/money.PNG';
 
 function drawLife() {
-  const iconSize = 30; // 아이콘 크기 (가로세로)
-  const spacing = 5;   // 각 아이콘 간 간격
-
   for (let i = 0; i < life; i++) {
     cvs.drawImage(
       lifeImg,
-      i * (iconSize + spacing),
-      0,
-      iconSize,
-      iconSize
+      i * (heartSize + iconSpacing) + iconSpacing,
+      10,
+      heartSize,
+      heartSize
     );
   }
 }
 
 function drawMoney() {
-  const iconSize = 25; // 아이콘 크기 (가로세로)
-
   cvs.drawImage(
     moneyImg,
-    600,
-    0,
-    iconSize * 2,
-    iconSize
+    canvas.width - moneySize * 5,
+    10,
+    moneySize * 2,
+    moneySize
   )
   cvs.fillStyle = "black";
-  cvs.font = "18px 'Gothic A1'";
-  cvs.fillText(money, canvas.width - 30, 20);
+  cvs.font = "45px 'Noto Sans KR'";
+  cvs.fillText(money, canvas.width - moneySize * 2.5, moneySize);
+}
+
+function drawMenu() {
+  const { name, ingredient } = menu_korean[order];
+  const ingText = ingredient.join('  +  ');
+  const menuText = `${name}  :  ${ingText}`;
+
+  cvs.strokeStyle = 'black';     // 테두리 색
+  cvs.lineWidth = 1;           // 테두리 두께
+
+  const barX = canvas.width / 2 - barSize / 2;
+  const barY = 10;
+
+  const barWidth = barSize;
+  const barHeight = barSize / 18;
+
+  cvs.strokeRect(barX, barY, barWidth, barHeight);   // 테두리만 있는 직사각형 그리기 (x, y, width, height)
+  
+  cvs.fillStyle = "black";
+  cvs.font = "32px 'Noto Sans KR'";
+  cvs.textAlign = "center";
+  cvs.textBaseline = "middle";
+
+  const textX = canvas.width / 2;
+  const textY = barY + barHeight / 2;
+
+  cvs.fillText(menuText, textX, textY);
+}
+
+function drawBackground() {
+  cvs.drawImage(
+    backgroundImg,
+    0,
+    70,
+    canvas.width,
+    canvas.height - topSpace
+  );
 }
