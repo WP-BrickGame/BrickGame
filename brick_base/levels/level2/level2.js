@@ -32,14 +32,22 @@ const brickPadding = 2;
 const brickTop = 30;
 const brickLeft = 0;
 
-const ImgPath = '../../../imgs/'
+const ImgPath = '../../../imgs/';
 const brickPath = ImgPath + 'brick/';
-const pngPath = ImgPath + 'png/'
-const imgExt = '.png'
+const pngPath = ImgPath + 'png/';
+const imgExt = '.png';
 const ingredients = ['none', 'ice', 'icecream_van', 'icecream_tea', 
                     'mango', 'strawberry', 'greentea',
                     'sirup_milk', 'sirup_str', 'sirup_man',
                     ];
+
+const itemPath = '../../../imgs/png/';
+itemImgs = ingredients.map( name => {
+  const img = new Image();
+  img.src = itemPath + name + imgExt;
+  return img;
+}
+)
 
 let topBrickImg = null;
 let topBrickTimer = null;
@@ -184,7 +192,7 @@ function collisionCheck() {
           // checkMenu(b);
           b.status = 0;
 
-          showTopBrick(brickImgs[b.imgIdx]); //닿은 블록의 이미지를 전달
+          showTopBrick(itemImgs[b.imgIdx]); //닿은 블록의 이미지를 전달
 
           if (checkWin()) {
             win();
@@ -272,8 +280,8 @@ function draw() {
   collisionCheck();
   if(topBrickImg){
     const topX = canvas.width / 2 - brickWidth / 2;
-    const topY = 10; // 화면 상단 위치
-    cvs.drawImage(topBrickImg, topX, topY, brickWidth, brickHeight);
+    const topY = 120; // 화면 상단 위치
+    cvs.drawImage(topBrickImg, topX, topY, 80, 80);
   }
   if (isGameover) return;     // 남은 하트 한 개 없애려고 여기로 옮김
 
