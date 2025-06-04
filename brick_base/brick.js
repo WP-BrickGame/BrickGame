@@ -339,4 +339,32 @@ document.addEventListener("DOMContentLoaded", function () {
     applySpeed(speedSlider.value);
     originalStart();
   };
+
+  //배경음악 -> 브라우저 정책 위반.? 으로 안됨.
+  // const bgm = document.getElementById("main-bgm");
+  // bgm.play();
+
+  // 배경음악 재생
+  const bgm = document.getElementById("main-bgm");
+  const bgmCheck = document.getElementById("bgm-check");
+
+  bgmCheck.addEventListener("change", () =>{
+    if(bgmCheck.checked){
+      bgm.muted = false;
+      bgm.play();
+    } else{
+      bgm.pause();
+    }
+  });
+
+  //버튼 클릭 시 효과음 재생
+  const buttonSound = document.getElementById("button-sound");
+
+  document.querySelectorAll("button, .level-btn, .back-button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      buttonSound.currentTime = 0;
+      buttonSound.play();
+    });
+  });
+
 });
