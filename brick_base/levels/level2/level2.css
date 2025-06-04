@@ -1,0 +1,37 @@
+* {
+	font-family: 'Gothic A1', 'Noto Sans Korean', serif;
+}
+
+body{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	margin: 0;
+}
+
+.game{
+	text-align: center;
+	position: relative;
+}
+
+canvas{
+	display: block;
+	margin: 0 auto;
+	background-color: white;
+	border: 1px solid black;
+}
+
+button{
+	margin: 5px;
+}
+
+.game-over{
+	display: none;
+	position: absolute;
+	top: 40%;
+	left: 30%;
+	font-size: 48px;
+	color: red;
+	padding: 20px;
+}
