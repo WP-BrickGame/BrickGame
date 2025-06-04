@@ -1,5 +1,5 @@
 * {
-	font-family: 'Gothic A1', 'Noto Sans KR', serif;
+	font-family: 'Gothic A1', 'Noto Sans Korean', serif;
 }
 
 body{
@@ -34,14 +34,4 @@ button{
 	font-size: 48px;
 	color: red;
 	padding: 20px;
-}
-
-#gameover {
-	background-color: rgba(0, 0, 0, 80%);
-	top: 0;
-	left: 0;
-}
-
-#win {
-	background-color: rgba(0, 0, 0, 80%);
 }
