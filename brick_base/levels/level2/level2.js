@@ -7,8 +7,9 @@ let life = 3;
 // 돈
 let money = 0;
 
-// 현재 주문
+// 현재 주문 메뉴
 var order;
+let matchedIngredients = new Set();
 
 var ingIdx = 0;
 
@@ -41,8 +42,12 @@ const ingredients = ['none', 'ice', 'icecream_van', 'icecream_tea',
                     'sirup_milk', 'sirup_str', 'sirup_man',
                     ];
 
+const ingredientNoNone = ['ice', 'icecream_van', 'icecream_tea', 
+                          'mango', 'strawberry', 'greentea',
+                          'sirup_milk', 'sirup_str', 'sirup_man',
+                           ];
 const itemPath = '../../../imgs/png/';
-itemImgs = ingredients.map( name => {
+itemImgs = ingredientNoNone.map( name => {
   const img = new Image();
   img.src = itemPath + name + imgExt;
   return img;
@@ -90,21 +95,21 @@ function init() {
   )
 
   menu = [
-    {
-      name: 'redbean',
-      ingredient: ['ice', 'redbean', 'sirup_milk'],
-      cost: 100
-    },
-    {
-      name: 'injeolmi',
-      ingredient: ['ice', 'injeolmi', 'sirup_milk'],
-      cost: 100
-    },
-    {
-      name: 'choco',
-      ingredient: ['ice', 'icecream_cho', 'sirup_choco'],
-      cost: 100
-    },
+    // {
+    //   name: 'redbean',
+    //   ingredient: ['ice', 'redbean', 'sirup_milk'],
+    //   cost: 100
+    // },
+    // {
+    //   name: 'injeolmi',
+    //   ingredient: ['ice', 'injeolmi', 'sirup_milk'],
+    //   cost: 100
+    // },
+    // {
+    //   name: 'choco',
+    //   ingredient: ['ice', 'icecream_cho', 'sirup_choco'],
+    //   cost: 100
+    // },
     {
       name: 'strawberry',
       ingredient: ['ice', 'icecream_van', 'strawberry', 'sirup_str'],
@@ -121,7 +126,7 @@ function init() {
       cost: 100
     }
   ];
-
+  newMenu();
   isGameover = false;
   document.getElementById("gameover").style.display = "none";
   document.getElementById("win").style.display = "none";
@@ -189,10 +194,12 @@ function collisionCheck() {
             ball.dy = -ball.dy;
           }
 
-          // checkMenu(b);
+          checkMenu(b);
           b.status = 0;
+          console.log(b.ingredient+"닿음");
+          console.log(matchedIngredients);
 
-          showTopBrick(itemImgs[b.imgIdx]); //닿은 블록의 이미지를 전달
+          showTopBrick(itemImgs[b.imgIdx-1]); //닿은 블록의 이미지를 전달
 
           if (checkWin()) {
             win();
@@ -355,15 +362,20 @@ function win() {
 }
 
 function newMenu() {
-  order = Math.floor(Math.random()*6);
+  order = Math.floor(Math.random()*menu.length);
+  matchedIngredients.clear();
+  console.log(menu[order]);
+  console.log(menu[order].ingredient);
 }
 
 function checkMenu(brick) {
-  if (brick.ingredient == menu[order].ingredient[ingIdx]) {
-    ingIdx++;
+  //현재 메뉴의 재료 배열
+  const ingredients = menu[order].ingredient;
+
+  if(ingredients.includes(brick.ingredient) && !matchedIngredients.has(brick)){
+    matchedIngredients.add(brick.ingredient);
   }
-  if (ingIdx == 4) {
-    ingIdx = 0;
+  if(matchedIngredients.size === ingredients.length){
     money += menu[order].cost;
     newMenu();
   }
