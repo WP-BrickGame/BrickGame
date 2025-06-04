@@ -41,6 +41,9 @@ const ingredients = ['none', 'ice', 'icecream_van', 'icecream_tea',
                     'sirup_milk', 'sirup_str', 'sirup_man',
                     ];
 
+let topBrickImg = null;
+let topBrickTimer = null;
+
 function init() {
   ball = {
     x: canvas.width / 2,
@@ -181,6 +184,8 @@ function collisionCheck() {
           // checkMenu(b);
           b.status = 0;
 
+          showTopBrick(brickImgs[b.imgIdx]); //닿은 블록의 이미지를 전달
+
           if (checkWin()) {
             win();
           }
@@ -265,7 +270,11 @@ function draw() {
   drawBall();
   drawPaddle();
   collisionCheck();
-
+  if(topBrickImg){
+    const topX = canvas.width / 2 - brickWidth / 2;
+    const topY = 10; // 화면 상단 위치
+    cvs.drawImage(topBrickImg, topX, topY, brickWidth, brickHeight);
+  }
   if (isGameover) return;     // 남은 하트 한 개 없애려고 여기로 옮김
 
   if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
@@ -350,6 +359,14 @@ function checkMenu(brick) {
     money += menu[order].cost;
     newMenu();
   }
+}
+function showTopBrick(img){
+  topBrickImg = img;
+  if (topBrickTimer) clearTimeout(topBrickTimer);
+  topBrickTimer = setTimeout(() => {
+    topBrickImg = null;
+    topBrickTimer = null;
+  }, 1000);
 }
 
 const lifeImg = new Image();
