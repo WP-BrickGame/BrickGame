@@ -122,39 +122,24 @@ function init() {
   )
 
   menu = [
-    // {
-    //   name: 'redbean',
-    //   ingredient: ['ice', 'redbean', 'sirup_milk'],
-    //   cost: 100
-    // },
-    // {
-    //   name: 'injeolmi',
-    //   ingredient: ['ice', 'injeolmi', 'sirup_milk'],
-    //   cost: 100
-    // },
-    // {
-    //   name: 'choco',
-    //   ingredient: ['ice', 'icecream_cho', 'sirup_choco'],
-    //   cost: 100
-    // },
+    {
+      name: 'strawberry',
+      ingredient: ['ice', 'icecream_van', 'strawberry', 'sirup_str'],
+      cost: 100
+    },
+    {
+      name: 'mango',
+      ingredient: ['ice', 'icecream_van', 'mango', 'sirup_man'],
+      cost: 100
+    },
+    {
+      name: 'greentea',
+      ingredient: ['ice', 'icecream_tea', 'greentea', 'sirup_milk'],
+      cost: 100
+    }
   ];
 
   menu_korean = [
-    {
-      name: '팥빙수',
-      ingredient: ['얼음', '팥', '연유'],
-      cost: 100
-    },
-    {
-      name: '인절미빙수',
-      ingredient: ['얼음', '인절미', '연유'],
-      cost: 100
-    },
-    {
-      name: '초코빙수',
-      ingredient: ['얼음', '초코아이스크림', '초코시럽'],
-      cost: 100
-    },
     {
       name: '딸기빙수',
       ingredient: ['얼음', '바닐라아이스크림', '딸기', '딸기시럽'],
@@ -397,6 +382,8 @@ function gameOver() {
   }
   draw();       // 왜 남은 하트 한 개 안 없어짐? ㅇㅎ
   document.getElementById("gameover").style.display = "block";
+  document.getElementById("gameover").style.width = canvas.width - topSpace/2 + 'px';
+  document.getElementById("gameover").style.height = canvas.height - topSpace/2 + 'px';
   gameStarted = false;
 }
 
@@ -414,7 +401,8 @@ function checkWin() {
 function win() {
   isGameover = true;
   document.getElementById("win").style.display = "block";
-  document.getElementById("startBtn").style.display = "block";
+  document.getElementById("win").style.width = canvas.width - topSpace/2 + 'px';
+  document.getElementById("win").style.height = canvas.height - topSpace/2 + 'px';
 }
 
 function newMenu() {
