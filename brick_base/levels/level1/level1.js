@@ -11,6 +11,10 @@ let money = 0;
 var order;
 let matchedIngredients = new Set();
 
+let showIngredients = false;
+let orderIngredientsArr = [];
+let orderIngredientsNames = null;
+
 var ingNum = 0;
 
 // 캔버스
@@ -161,8 +165,6 @@ function init() {
   isGameover = false;
   document.getElementById("gameover").style.display = "none";
   document.getElementById("win").style.display = "none";
-
-  newMenu();
 }
 
 init();
@@ -407,16 +409,32 @@ function win() {
 function newMenu() {
   order = Math.floor(Math.random()*menu.length);
   matchedIngredients.clear();
+
+  orderIngredientsNames = menu[order].ingredient;
+
+
+  //검사
   console.log(menu[order]);
   console.log(menu[order].ingredient);
+
+  //재료 이미지 배열 구성
+  orderIngredientsArr = ingredients.map(name =>{
+    const idx = ingredientNoNone.indexOf(name);
+    return itemImgs[idx];
+  })
 }
 
 function checkMenu(brick) {
   //현재 메뉴의 재료 배열
   const ingredients = menu[order].ingredient;
-
+  
   if(ingredients.includes(brick.ingredient) && !matchedIngredients.has(brick)){
     matchedIngredients.add(brick.ingredient);
+    for(let i = 0; i<orderIngredientsArr; i++){
+      if(brick.ingredient == orderIngredientsNames[i]){
+        drawMenu(); //이미지 전달
+      }
+    }
   }
   if(matchedIngredients.size === ingredients.length){
     money += menu[order].cost;
@@ -463,7 +481,7 @@ function drawMoney() {
   cvs.fillText(money, canvas.width - moneySize * 2.5, moneySize);
 }
 
-function drawMenu() {
+function drawMenu(ingImg) {
   const { name, ingredient } = menu_korean[order];
   const ingText = ingredient.join('  +  ');
   const menuText = `${name}  :  ${ingText}`;
@@ -488,6 +506,33 @@ function drawMenu() {
   const textY = barY + barHeight / 2;
 
   cvs.fillText(menuText, textX, textY);
+
+  const imgSize = 80;
+  const imgGap = 20;
+  const totalWidth = ingredient.length * imgSize + (ingredient.length - 1) * imgGap;
+  const imgStartX = canvas.width / 2 - totalWidth / 2;
+  const imgY = barY + barHeight + 10;
+
+  // for (let i = 0; i < ingredientNoNone.length; i++) {
+  //     cvs.drawImage(ingImg, imgStartX + i * (imgSize + imgGap), imgY, imgSize, imgSize);
+  // }
+  for (let i = 0; i < ingredient.length; i++) {
+    const ingName = ingredient[i];
+    const idx = ingredientNoNone.indexOf(ingName);
+    const img = itemImgs[idx];
+
+    if (img && img.complete) {
+      // ✅ matchedIngredients에 들어있는 재료면 이미지 밝기 줄이기
+      if (matchedIngredients.has(ingName)) {
+        cvs.globalAlpha = 0.4; // 반투명하게
+      } else {
+        cvs.globalAlpha = 1.0;
+      }
+
+      cvs.drawImage(img, imgStartX + i * (imgSize + imgGap), imgY, imgSize, imgSize);
+      cvs.globalAlpha = 1.0; // 원래대로
+    }
+  }
 }
 
 function drawBackground() {
