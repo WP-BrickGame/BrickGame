@@ -517,15 +517,9 @@ function drawMenu() {
 
   cvs.fillText(menuText, textX, textY);
 
-  const imgSize = 80;
-  const imgGap = 20;
-  const totalWidth = ingredient.length * imgSize + (ingredient.length - 1) * imgGap;
-  const imgStartX = canvas.width / 2 - totalWidth / 2;
-  const imgY = barY + barHeight + 10;
-
   const timerY = barY + barHeight + 32;  // 메뉴 바 아래 + 글자 높이만큼 떨어진 위치
-  cvs.font = "24px 'Noto Sans KR'";
-  cvs.fillText(`⏰ ${timerText}`,canvas.width / 2, timerY );
+  cvs.font = "30px 'Noto Sans KR'";
+  cvs.fillText(`⏰ ${timerText}`,canvas.width /15, timerY );
 }
 
 function drawBackground() {
