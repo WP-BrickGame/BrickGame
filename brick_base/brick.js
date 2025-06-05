@@ -285,16 +285,16 @@ function goBackHome() {
     document.querySelector('.main_page').style.display = 'block'; //홈화면 보이기
 }
 
-function goToLevel1() {
-  location.href='./levels/level1/level1.html';
+function goToLevel1(speed) {
+  location.href=`./levels/level1/level1.html?speed=${speed}`;
 }
 
-function goToLevel2() {
-  location.href='./levels/level2/level2.html';
+function goToLevel2(speed) {
+  location.href=`./levels/level2/level2.html?speed=${speed}`;
 }
 
-function goToLevel3() {
-  location.href='./levels/level3/level3.html';
+function goToLevel3(speed) {
+  location.href=`./levels/level3/level3.html?speed=${speed}`;
 }
 
 document.addEventListener("DOMContentLoaded", function () {

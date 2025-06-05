@@ -1,5 +1,9 @@
 // 사용자 선택
 var ballSize = 1;
+var ballSpeed = 4;
+
+// 패들 속도
+var paddleSpeed = 7;
 
 // 목숨
 let life = 3;
@@ -85,17 +89,20 @@ let topBrickImg = null;
 let topBrickTimer = null;
 
 function init() {
+  const urlParams = new URLSearchParams(window.location.search);
+  ballSpeed = parseInt(urlParams.get('speed'), 10) || 4;
+
   ball = {
     x: canvas.width / 2,
     y: canvas.height - 30,
-    dx: 4,
-    dy: -4,
+    dx: ballSpeed,
+    dy: -ballSpeed,
     radius: 8
   };
 
   paddle = {
-    height: 10,
-    width: canvas.width / 6,
+    height: 15,
+    width: canvas.width / 7,
     x: canvas.width / 2
   };
 
@@ -379,9 +386,9 @@ function draw() {
   ball.y += ball.dy;
 
   if (rPressed && paddle.x < canvas.width - paddle.width) {
-    paddle.x += 7;
+    paddle.x += paddleSpeed;
   } else if (lPressed && paddle.x > 0) {
-    paddle.x -= 7;
+    paddle.x -= paddleSpeed;
   }
 
   requestAnimationFrame(draw);
