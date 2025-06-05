@@ -47,7 +47,11 @@ const iconSpacing = 15;
 
 const barSize = 900;
 
+let topBrickImg = null;
+let topBrickTimer = null;
+
 const ImgPath = '../../../imgs/';
+const itemPath = '../../../imgs/png/';
 const brickPath = ImgPath + 'brick/';
 const pngPath = ImgPath + 'png/';
 const imgExt = '.png';
@@ -57,6 +61,12 @@ const ingredients = ['none', 'ice', 'injeolmi', 'mango', 'strawberry',
                     'icecream_van', 'icecream_cho', 'icecream_tea',
                     'brownie', 'cereal', 'cheese', 'chocochip', 'greentea'
                     ];
+                  
+const ingredientNoNone = ['ice', 'injeolmi', 'mango', 'strawberry',
+                          'redbean', 'sirup_milk', 'sirup_cho', 'sirup_str', 'sirup_man',
+                          'icecream_van', 'icecream_cho', 'icecream_tea',
+                          'brownie', 'cereal', 'cheese', 'chocochip', 'greentea'
+                          ];
 
 const toppings = ['brownie', 'cereal', 'cheese', 'chocochip']
 const toppings_korean = ['브라우니', '시리얼', '치즈', '초코칩']
@@ -64,27 +74,18 @@ const toppings_korean = ['브라우니', '시리얼', '치즈', '초코칩']
 const backgroundImg = new Image();
 backgroundImg.src = ImgPath + 'background.png';
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth - 1;
-  canvas.height = window.innerHeight - 1;
+const ballImg = new Image();
+ballImg.src = ImgPath + 'icon/ball.PNG';
 
-  drawBackground();
-}
+const paddleImg = new Image();
+paddleImg.src = ImgPath + 'icon/paddle.png';
 
-// 처음 로드할 때, 창 크기 변경할 때 캔버스 크기 조절
-window.addEventListener("load", () => {
-  resizeCanvas()
-});
+const lifeImg = new Image();
+lifeImg.src = ImgPath + 'icon/heart.PNG';
 
-window.addEventListener("resize", resizeCanvas);
+const moneyImg = new Image();
+moneyImg.src = ImgPath + 'icon/money.PNG';
 
-const ingredientNoNone = ['ice', 'injeolmi', 'mango', 'strawberry',
-                          'redbean', 'sirup_milk', 'sirup_cho', 'sirup_str', 'sirup_man',
-                          'icecream_van', 'icecream_cho', 'icecream_tea',
-                          'brownie', 'cereal', 'cheese', 'chocochip', 'greentea'
-                          ];
-
-const itemPath = '../../../imgs/png/';
 itemImgs = ingredientNoNone.map( name => {
   const img = new Image();
   img.src = itemPath + name + imgExt;
@@ -92,54 +93,12 @@ itemImgs = ingredientNoNone.map( name => {
 }
 )
 
-let topBrickImg = null;
-let topBrickTimer = null;
-
-function init() {
-  const urlParams = new URLSearchParams(window.location.search);
-  ballSize = parseInt(urlParams.get('size'), 10) / 10 || 1;
-  ballSpeed = parseInt(urlParams.get('speed'), 10) || 4;// 또는 Number()
-
-  ball = {
-    x: canvas.width / 2,
-    y: canvas.height - 30 * ballSize,
-    dx: ballSpeed,
-    dy: -ballSpeed,
-    radius: 8 * ballSize
-  };
-
-  paddle = {
-    height: 15,
-    width: canvas.width / 7,
-    x: canvas.width / 2
-  };
-
-  order = {
-    menu: 0,
-    topping: 0
+brickImgs = ingredients.map( name => {
+    const img = new Image();
+    img.src = brickPath + name + imgExt;
+    return img;
   }
-
-  const rowColors = ['red', 'yellow', 'green', 'blue', 'purple'];
-
-  bricks = [];
-  for (let c = 0; c < brickCols; c++) {
-    bricks[c] = [];
-    for (let r = 0; r < brickRows; r++) {
-      const color = rowColors[r % rowColors.length];
-
-      let imgIdx = Math.floor(Math.random()*(ingredients.length))
-      //재료마다 점수 조정할 때 사용하면 좋을 거 같음
-      const points = color === 'red' ? 40 : color === 'blue' ? 30 : color === 'yellow' ? 20 : color === 'green' ? 10 : 5;
-      bricks[c][r] = { x: 0, y: 0, status: 1, color: color, points: points, imgIdx: imgIdx, ingredient: ingredients[imgIdx] };
-    }
-  }
-
-  brickImgs = ingredients.map( name => {
-      const img = new Image();
-      img.src = brickPath + name + imgExt;
-      return img;
-    }
-  )
+)
 
 menu = [
   {
@@ -200,11 +159,111 @@ menu_korean = [
     cost: 100
   }
 ];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth - 1;
+  canvas.height = window.innerHeight - 1;
+
+  drawBackground();
+}
+
+// 처음 로드할 때, 창 크기 변경할 때 캔버스 크기 조절
+window.addEventListener("load", () => {
+  resizeCanvas()
+});
+
+window.addEventListener("resize", resizeCanvas);
+
+window.onload = () => {
+  run();
+};
+
+function run() {
+  init();             // init() 안 해줬어서 첫 실행이 이상했음!
+
+  cvs.fillStyle = 'black';
+  cvs.font = "72px 'Gothic A1'";
+  cvs.textAlign = "center";
+  cvs.textBaseline = "middle";
+
+  cvs.fillText('Level 3', canvas.width / 2, canvas.height / 2)
+
+  setTimeout(() => {
+    drawBackground();
+    startCount();
+  }, 1000)
+
+  function startCount() {
+    let y = drawStartPage();
+
+    i = 3;
+    const countdown = setInterval(() => {
+      drawBackground();
+      drawStartPage();
+      drawCountDown(i--, y);
+
+      if (i < 0) clearInterval(countdown);
+    }, 1000);
+
+    setTimeout(()=>{
+      drawBackground();
+
+      cvs.fillStyle = 'black';
+      cvs.font = "40px 'Gothic A1'";
+      cvs.textAlign = "center";
+      cvs.textBaseline = "middle";
+
+      cvs.fillText('Start !', canvas.width / 2, canvas.height / 2);
+    }, 4000);
+
+    setTimeout(()=>{
+      start();
+    }, 5000);
+  }
+}
+
+function init() {
+  const urlParams = new URLSearchParams(window.location.search);
+  ballSize = parseInt(urlParams.get('size'), 10) / 10 || 1;
+  ballSpeed = parseInt(urlParams.get('speed'), 10) || 4;// 또는 Number()
+
+  ball = {
+    x: canvas.width / 2,
+    y: canvas.height - 30 * ballSize,
+    dx: ballSpeed,
+    dy: -ballSpeed,
+    radius: 8 * ballSize
+  };
+
+  paddle = {
+    height: 15,
+    width: canvas.width / 7,
+    x: canvas.width / 2
+  };
+
+  order = {
+    menu: 0,
+    topping: 0
+  }
+
+  bricks = [];
+  initBricks();
+
   isGameover = false;
   document.getElementById("gameover").style.display = "none";
   document.getElementById("win").style.display = "none";
 
   newMenu();
+}
+
+function initBricks() {
+  for (let c = 0; c < brickCols; c++) {
+    bricks[c] = [];
+    for (let r = 0; r < brickRows; r++) {
+      let imgIdx = Math.floor(Math.random()*ingredients.length);
+      bricks[c][r] = { x: 0, y: 0, status: 1, imgIdx: imgIdx, ingredient: ingredients[imgIdx] };
+    }
+  }
 }
 
 document.addEventListener("keydown", keyDown, false);
@@ -216,37 +275,6 @@ function keyDown(e) {
   } else if (e.key === "Left" || e.key === "ArrowLeft") {
     lPressed = true;
   }
-  else if (!gameStarted && e.code === "Space") {
-      init();             // init() 안 해줬어서 첫 실행이 이상했음!
-      let y = drawStartPage();
-
-      i = 3;
-      const countdown = setInterval(() => {
-        drawBackground();
-        drawStartPage();
-        drawCountDown(i--, y);
-      }, 1000);
-
-      setTimeout(() => {
-        clearInterval(countdown);
-      }, 3000)
-
-      setTimeout(()=>{
-        drawBackground();
-
-        cvs.fillStyle = 'black';
-        cvs.font = "40px 'Gothic A1'";
-        cvs.textAlign = "center";
-        cvs.textBaseline = "middle";
-
-        cvs.fillText('Start !', canvas.width / 2, canvas.height / 2);
-      }, 4000);
-
-      setTimeout(()=>{
-        e.preventDefault(); // 스크롤 방지 (중요)
-        start();
-      }, 5000);
-    }
 }
 
 function keyUp(e) {
@@ -302,8 +330,10 @@ function collisionCheck() {
 
           showTopBrick(itemImgs[b.imgIdx-1]); //닿은 블록의 이미지를 전달
 
-          if (checkWin()) {
-            win();
+          if (checkBrickClear()) {
+            // win();
+            initBricks();
+            drawBricks();
           }
         }
       }
@@ -384,7 +414,7 @@ function gameOver() {
   $('#gameover .score').text('Score: ' + money);
 }
 
-function checkWin() {
+function checkBrickClear() {
   for (let c = 0; c < brickCols; c++) {
     for (let r = 0; r < brickRows; r++) {
       if (bricks[c][r].status === 1) {
@@ -432,18 +462,6 @@ function showTopBrick(img){
     topBrickTimer = null;
   }, 1000);
 }
-
-const ballImg = new Image();
-ballImg.src = ImgPath + 'icon/ball.PNG';
-
-const paddleImg = new Image();
-paddleImg.src = ImgPath + 'icon/paddle.png';
-
-const lifeImg = new Image();
-lifeImg.src = ImgPath + 'icon/heart.PNG';
-
-const moneyImg = new Image();
-moneyImg.src = ImgPath + 'icon/money.PNG';
 
 function drawBall() {
   if (ballImg.complete) {

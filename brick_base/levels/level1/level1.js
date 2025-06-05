@@ -47,16 +47,95 @@ const iconSpacing = 15;
 
 const barSize = 900;
 
+let topBrickImg = null;
+let topBrickTimer = null;
+
 const ImgPath = '../../../imgs/';
+const itemPath = '../../../imgs/png/';
 const brickPath = ImgPath + 'brick/';
 const pngPath = ImgPath + 'png/';
 const imgExt = '.png';
+
 const ingredients = ['none', 'ice', 'redbean', 'injeolmi', 
                     'icecream_cho','sirup_cho',
                     'sirup_milk',
                     ];
+
+const ingredientNoNone = ['ice', 'redbean', 'injeolmi', 
+                          'icecream_cho','sirup_cho',
+                          'sirup_milk',
+                           ];
+
 const backgroundImg = new Image();
 backgroundImg.src = ImgPath + 'background.png';
+
+const ballImg = new Image();
+ballImg.src = ImgPath + 'icon/ball.PNG';
+
+const paddleImg = new Image();
+paddleImg.src = ImgPath + 'icon/paddle.png';
+
+const lifeImg = new Image();
+lifeImg.src = ImgPath + 'icon/heart.PNG';
+
+const moneyImg = new Image();
+moneyImg.src = ImgPath + 'icon/money.PNG';
+
+brickImgs = ingredients.map( name => {
+    const img = new Image();
+    img.src = brickPath + name + imgExt;
+    return img;
+  }
+)
+
+itemImgs = ingredientNoNone.map( name => {
+  const img = new Image();
+  img.src = itemPath + name + imgExt;
+  return img;
+}
+)
+
+menu = [
+  {
+    name: 'redbean',
+    ingredient: ['ice', 'redbean', 'sirup_milk'],
+    cost: 100
+  },
+  {
+    name: 'injeolmi',
+    ingredient: ['ice', 'injeolmi', 'sirup_milk'],
+    cost: 100
+  },
+  {
+    name: 'choco',
+    ingredient: ['ice', 'icecream_cho', 'sirup_cho'],
+    cost: 100
+  },
+];
+
+menu_korean = [
+  {
+    name: '팥빙수',
+    ingredient: ['얼음', '팥', '연유'],
+    cost: 100
+  },
+  {
+    name: '인절미 빙수',
+    ingredient: ['얼음', '인절미', '연유'],
+    cost: 100
+  },
+  {
+    name: '초코 빙수',
+    ingredient: ['얼음', '초코 아이스크림', '초코시럽'],
+    cost: 100
+  }
+];
+
+// 처음 로드할 때, 창 크기 변경할 때 캔버스 크기 조절
+window.addEventListener("load", () => {
+  resizeCanvas()
+});
+window.addEventListener("resize", resizeCanvas);
 
 function resizeCanvas() {
   canvas.width = window.innerWidth - 1;
@@ -65,28 +144,53 @@ function resizeCanvas() {
   drawBackground();
 }
 
-// 처음 로드할 때, 창 크기 변경할 때 캔버스 크기 조절
-window.addEventListener("load", () => {
-  resizeCanvas()
-  paddle.x = canvas.width / 2 - (canvas.width / 6) / 2;
-  ball.x = canvas.width / 2
-});
-window.addEventListener("resize", resizeCanvas);
+window.onload = () => {
+  run();
+};
 
-const ingredientNoNone = ['ice', 'redbean', 'injeolmi', 
-                          'icecream_cho','sirup_cho',
-                          'sirup_milk',
-                           ];
-const itemPath = '../../../imgs/png/';
-itemImgs = ingredientNoNone.map( name => {
-  const img = new Image();
-  img.src = itemPath + name + imgExt;
-  return img;
+function run() {
+  init();             // init() 안 해줬어서 첫 실행이 이상했음!
+
+  cvs.fillStyle = 'black';
+  cvs.font = "72px 'Gothic A1'";
+  cvs.textAlign = "center";
+  cvs.textBaseline = "middle";
+
+  cvs.fillText('Level 1', canvas.width / 2, canvas.height / 2)
+
+  setTimeout(() => {
+    drawBackground();
+    startCount();
+  }, 1000)
+
+  function startCount() {
+    let y = drawStartPage();
+
+    i = 3;
+    const countdown = setInterval(() => {
+      drawBackground();
+      drawStartPage();
+      drawCountDown(i--, y);
+
+      if (i < 0) clearInterval(countdown);
+    }, 1000);
+
+    setTimeout(()=>{
+      drawBackground();
+
+      cvs.fillStyle = 'black';
+      cvs.font = "40px 'Gothic A1'";
+      cvs.textAlign = "center";
+      cvs.textBaseline = "middle";
+
+      cvs.fillText('Start !', canvas.width / 2, canvas.height / 2);
+    }, 4000);
+
+    setTimeout(()=>{
+      start();
+    }, 5000);
+  }
 }
-)
-
-let topBrickImg = null;
-let topBrickTimer = null;
 
 function init() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -107,73 +211,26 @@ function init() {
     x: canvas.width / 2
   };
 
-  const rowColors = ['red', 'yellow', 'green', 'blue', 'purple'];
-
   bricks = [];
-  for (let c = 0; c < brickCols; c++) {
-    bricks[c] = [];
-    for (let r = 0; r < brickRows; r++) {
-      const color = rowColors[r % rowColors.length];
+  initBricks();
 
-      let imgIdx = Math.floor(Math.random()*ingredients.length);
-      //재료마다 점수 조정할 때 사용하면 좋을 거 같음
-      const points = color === 'red' ? 40 : color === 'blue' ? 30 : color === 'yellow' ? 20 : color === 'green' ? 10 : 5;
-      bricks[c][r] = { x: 0, y: 0, status: 1, color: color, points: points, imgIdx: imgIdx, ingredient: ingredients[imgIdx] };
-    }
-  }
-
-  brickImgs = ingredients.map( name => {
-      const img = new Image();
-      img.src = brickPath + name + imgExt;
-      return img;
-    }
-  )
-
-  menu = [
-    {
-      name: 'redbean',
-      ingredient: ['ice', 'redbean', 'sirup_milk'],
-      cost: 100
-    },
-    {
-      name: 'injeolmi',
-      ingredient: ['ice', 'injeolmi', 'sirup_milk'],
-      cost: 100
-    },
-    {
-      name: 'choco',
-      ingredient: ['ice', 'icecream_cho', 'sirup_cho'],
-      cost: 100
-    },
-  ];
-
-  menu_korean = [
-    {
-      name: '팥빙수',
-      ingredient: ['얼음', '팥', '연유'],
-      cost: 100
-    },
-    {
-      name: '인절미 빙수',
-      ingredient: ['얼음', '인절미', '연유'],
-      cost: 100
-    },
-    {
-      name: '초코 빙수',
-      ingredient: ['얼음', '초코 아이스크림', '초코시럽'],
-      cost: 100
-    }
-  ];
-
-  newMenu();
   isGameover = false;
+
   document.getElementById("gameover").style.display = "none";
   document.getElementById("win").style.display = "none";
 
   newMenu();
 }
 
-init();
+function initBricks() {
+  for (let c = 0; c < brickCols; c++) {
+    bricks[c] = [];
+    for (let r = 0; r < brickRows; r++) {
+      let imgIdx = Math.floor(Math.random()*ingredients.length);
+      bricks[c][r] = { x: 0, y: 0, status: 1, imgIdx: imgIdx, ingredient: ingredients[imgIdx] };
+    }
+  }
+}
 
 document.addEventListener("keydown", keyDown, false);
 document.addEventListener("keyup", keyUp, false);
@@ -184,37 +241,6 @@ function keyDown(e) {
   } else if (e.key === "Left" || e.key === "ArrowLeft") {
     lPressed = true;
   }
-  else if (!gameStarted && e.code === "Space") {
-      init();             // init() 안 해줬어서 첫 실행이 이상했음!
-      let y = drawStartPage();
-
-      i = 3;
-      const countdown = setInterval(() => {
-        drawBackground();
-        drawStartPage();
-        drawCountDown(i--, y);
-      }, 1000);
-
-      setTimeout(() => {
-        clearInterval(countdown);
-      }, 3000)
-
-      setTimeout(()=>{
-        drawBackground();
-
-        cvs.fillStyle = 'black';
-        cvs.font = "40px 'Gothic A1'";
-        cvs.textAlign = "center";
-        cvs.textBaseline = "middle";
-
-        cvs.fillText('Start !', canvas.width / 2, canvas.height / 2);
-      }, 4000);
-
-      setTimeout(()=>{
-        e.preventDefault(); // 스크롤 방지 (중요)
-        start();
-      }, 5000);
-    }
 }
 
 function keyUp(e) {
@@ -225,8 +251,6 @@ function keyUp(e) {
   }
 }
 
-
-//gpt
 function collisionCheck() {
   for (let c = 0; c < brickCols; c++) {
     for (let r = 0; r < brickRows; r++) {
@@ -272,76 +296,12 @@ function collisionCheck() {
 
           showTopBrick(itemImgs[b.imgIdx-1]); //닿은 블록의 이미지를 전달
 
-          if (checkWin()) {
-            win();
+          if (checkBrickClear()) {
+            // win();
+            initBricks();
+            drawBricks();
           }
         }
-      }
-    }
-  }
-}
-
-const ballImg = new Image();
-ballImg.src = ImgPath + 'icon/ball.PNG';
-
-function drawBall() {
-  if (ballImg.complete) {
-    // 이미지 중심이 ball.x, ball.y가 되도록 조정
-    cvs.drawImage(
-      ballImg,
-      ball.x - ball.radius,
-      ball.y - ball.radius,
-      ball.radius * 2,
-      ball.radius * 2
-    );
-  } else {
-    // 이미지가 아직 로딩되지 않았을 경우 fallback으로 빨간 원 그리기
-    cvs.beginPath();
-    cvs.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    cvs.fillStyle = "blue";
-    cvs.fill();
-    cvs.closePath();
-  }
-}
-
-const paddleImg = new Image();
-paddleImg.src = ImgPath + 'icon/paddle.png';
-
-function drawPaddle() {
-  if (paddleImg.complete) {
-    cvs.drawImage(
-      paddleImg,
-      paddle.x,
-      canvas.height - paddle.height - 10,
-      paddle.width,
-      paddle.height
-    );
-  }
-  else {
-    cvs.beginPath();
-    cvs.rect(paddle.x, canvas.height - paddle.height - 10, paddle.width, paddle.height);
-    cvs.fillStyle = "rgb(91,162,209)";
-    cvs.fill();
-    cvs.closePath();
-  }
-}
-
-function drawBricks() {
-  for (let c = 0; c < brickCols; c++) {
-    for (let r = 0; r < brickRows; r++) {
-      if (bricks[c][r].status === 1) {
-        const brickX = c * (brickWidth + brickPadding) + brickLeft;
-        const brickY = r * (brickHeight + brickPadding) + topSpace + 12.5;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-
-        cvs.drawImage(
-          brickImgs[bricks[c][r].imgIdx],
-          bricks[c][r].x,
-          bricks[c][r].y,
-          brickWidth,
-          brickHeight
-        )
       }
     }
   }
@@ -420,7 +380,7 @@ function gameOver() {
   $('#gameover .score').text('Score: ' + money);
 }
 
-function checkWin() {
+function checkBrickClear() {
   for (let c = 0; c < brickCols; c++) {
     for (let r = 0; r < brickRows; r++) {
       if (bricks[c][r].status === 1) {
@@ -457,6 +417,7 @@ function checkMenu(brick) {
     newMenu();
   }
 }
+
 function showTopBrick(img){
   topBrickImg = img;
   if (topBrickTimer) clearTimeout(topBrickTimer);
@@ -466,11 +427,65 @@ function showTopBrick(img){
   }, 1000);
 }
 
-const lifeImg = new Image();
-lifeImg.src = ImgPath + 'icon/heart.PNG';
+function drawBall() {
+  if (ballImg.complete) {
+    // 이미지 중심이 ball.x, ball.y가 되도록 조정
+    cvs.drawImage(
+      ballImg,
+      ball.x - ball.radius,
+      ball.y - ball.radius,
+      ball.radius * 2,
+      ball.radius * 2
+    );
+  } else {
+    // 이미지가 아직 로딩되지 않았을 경우 fallback으로 파란 원 그리기
+    cvs.beginPath();
+    cvs.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    cvs.fillStyle = "blue";
+    cvs.fill();
+    cvs.closePath();
+  }
+}
 
-const moneyImg = new Image();
-moneyImg.src = ImgPath + 'icon/money.PNG';
+function drawPaddle() {
+  if (paddleImg.complete) {
+    cvs.drawImage(
+      paddleImg,
+      paddle.x,
+      canvas.height - paddle.height - 10,
+      paddle.width,
+      paddle.height
+    );
+  }
+  else {
+    cvs.beginPath();
+    cvs.rect(paddle.x, canvas.height - paddle.height - 10, paddle.width, paddle.height);
+    cvs.fillStyle = "rgb(91,162,209)";
+    cvs.fill();
+    cvs.closePath();
+  }
+}
+
+function drawBricks() {
+  for (let c = 0; c < brickCols; c++) {
+    for (let r = 0; r < brickRows; r++) {
+      if (bricks[c][r].status === 1) {
+        const brickX = c * (brickWidth + brickPadding) + brickLeft;
+        const brickY = r * (brickHeight + brickPadding) + topSpace + 12.5;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
+
+        cvs.drawImage(
+          brickImgs[bricks[c][r].imgIdx],
+          bricks[c][r].x,
+          bricks[c][r].y,
+          brickWidth,
+          brickHeight
+        )
+      }
+    }
+  }
+}
 
 function drawLife() {
   for (let i = 0; i < life; i++) {
