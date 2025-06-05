@@ -526,7 +526,7 @@ function drawMenu() {
   drawMenuIcon(startX, barY, barHeight);
 }
 
-function drawMenuIcon(barX, barY, barHeight) {
+function drawMenuIcon(startX, barY, barHeight) {
   const iconX = startX + cvs.measureText(menu_korean[order].name + ' : ').width;
   const iconY = barY * 4 + barHeight / 2;
 
