@@ -1,0 +1,102 @@
+* {
+	font-family: 'Gothic A1', 'Noto Sans Korean', serif;
+}
+
+body{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	margin: 0;
+}
+
+.game{
+	text-align: center;
+	position: relative;
+  	width: 100vw;
+  	height: 100vh;
+  	z-index: 0;
+}
+
+canvas{
+	display: block;
+	margin: 0 auto;
+	background-color: white;
+	border: 1px solid black;
+	position: relative;
+  	z-index: 1;
+}
+
+button{
+	margin: 5px;
+}
+/*
+.game-over{
+	display: none;
+	position: absolute;
+	top: 40%;
+	left: 30%;
+	font-size: 48px;
+	color: red;
+	padding: 20px;
+}
+
+#gameover {
+	background-color: rgba(0, 0, 0, 80%);
+	top: 0;
+	left: 0;
+}
+
+#win {
+	background-color: rgba(0, 0, 0, 80%);
+}*/
+.game-fin{
+	display: none;
+    background-color: black;
+    opacity: 0.8;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+	z-index: 10;
+}
+.game-fin img{
+    height: 20vh;
+    display: block;
+    position: absolute; /* 또는 relative */
+    top: 30vh;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.game-fin .score{
+    color: white;
+    height: 5vh;
+    display: block;
+    position: absolute; /* 또는 relative */
+    top: 52vh;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.game-fin .fin-button{
+    display: block;
+    position: absolute;
+    top: 60vh;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.game-fin .fin-button button{
+    background-color: rgb(60,225,240);
+    border: none;
+    padding: 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    width: 15vw;
+    height: 5vh;
+    margin-bottom: 2.5vh;
+}
+.game-fin .fin-button button:first-child{margin-right: 4vw;}
+.game-fin .fin-button span{
+    display: block;
+    color: white;
+    font-size: 2vh;
+}
