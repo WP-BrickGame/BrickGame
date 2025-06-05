@@ -397,6 +397,7 @@ function draw() {
 function start() {
   gameStarted = true;
   life = 3;
+  if (isGameover) init();
   draw();
 }
 
