@@ -27,7 +27,7 @@ let rPressed = false;
 let lPressed = false;
 let isGameover = false;
 
-const topSpace = 70;
+const topSpace = 120;
 
 const brickRows = 4;
 const brickCols = 14;
@@ -296,7 +296,7 @@ function drawBricks() {
     for (let r = 0; r < brickRows; r++) {
       if (bricks[c][r].status === 1) {
         const brickX = c * (brickWidth + brickPadding) + brickLeft;
-        const brickY = r * (brickHeight + brickPadding) + brickTop * 1.5;
+        const brickY = r * (brickHeight + brickPadding) + topSpace + 12.5;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
 
@@ -381,8 +381,8 @@ function gameOver() {
   }
   draw();     
   document.getElementById("gameover").style.display = "block";
-  document.getElementById("gameover").style.width = canvas.width - topSpace/2 + 'px';
-  document.getElementById("gameover").style.height = canvas.height - topSpace/2 + 'px';
+  document.getElementById("gameover").style.width = canvas.width -35 + 'px';
+  document.getElementById("gameover").style.height = canvas.height -35 + 'px';
   gameStarted = false;
 }
 
@@ -494,7 +494,7 @@ function drawBackground() {
   cvs.drawImage(
     backgroundImg,
     0,
-    70,
+    topSpace,
     canvas.width,
     canvas.height - topSpace
   );
