@@ -31,7 +31,7 @@ let rPressed = false;
 let lPressed = false;
 let isGameover = false;
 
-const topSpace = 70;
+const topSpace = 120;
 
 const brickRows = 4;
 const brickCols = 14;
