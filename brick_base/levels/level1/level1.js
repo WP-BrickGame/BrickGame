@@ -1,3 +1,11 @@
+const barSound = document.getElementById("bar-sound");
+const gameOverSound = document.getElementById("gameover-sound");
+const scoreSound = document.getElementById("score-sound");
+const brickSound = document.getElementById("brick-sound");
+
+const roundStartSound = document.getElementById("round-start-sound");
+const roundLoopSound = document.getElementById("round-loop-sound");
+
 // 사용자 선택
 var ballSize = 1;
 var ballSpeed = 4;
@@ -158,6 +166,9 @@ function run() {
 
   cvs.fillText('Level 1', canvas.width / 2, canvas.height / 2)
 
+  roundStartSound.currentTime = 0;
+  roundStartSound.play().catch(e => console.warn('roundStartSound error', e));
+
   setTimeout(() => {
     drawBackground();
     startCount();
@@ -291,6 +302,8 @@ function collisionCheck() {
 
           checkMenu(b);
           b.status = 0;
+          brickSound.currentTime =0;
+          brickSound.play();
           console.log(b.ingredient+"닿음");
           console.log(matchedIngredients);
 
@@ -333,6 +346,8 @@ function draw() {
   } else if (ball.y + ball.dy > canvas.height - ball.radius - paddle.height - 10) {
     if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
       ball.dy = -ball.dy;
+      barSound.currentTime=0;
+      barSound.play();
     } else {
       gameOver();
       if (isGameover) {
@@ -358,12 +373,18 @@ function start() {
   gameStarted = true;
   life = 3;
   if (isGameover) init();
+
+  roundLoopSound.currentTime = 0;
+  roundLoopSound.play();
+
   draw();
 }
 
 function gameOver() {
   console.log('게임오버 호출')
   isGameover = true;
+
+ 
   if (--life != 0) {
     console.log('life' + life);
     isGameover = false;
@@ -371,6 +392,11 @@ function gameOver() {
     ball.y = canvas.height - 30 * ballSize;
     paddle.x = (canvas.width - canvas.width/6) /2
     return;
+  } else{
+    roundLoopSound.pause();
+    roundLoopSound.currentTime = 0;
+    gameOverSound.currentTime = 0;
+    gameOverSound.play();
   }
   draw();       // 왜 남은 하트 한 개 안 없어짐? ㅇㅎ
   document.getElementById("gameover").style.display = "block";
@@ -393,6 +419,10 @@ function checkBrickClear() {
 
 function win() {
   isGameover = true;
+
+  roundLoopSound.pause();
+  roundLoopSound.currentTime = 0;
+
   document.getElementById("win").style.display = "block";
   document.getElementById("win").style.width = canvas.width - topSpace/2 + 'px';
   document.getElementById("win").style.height = canvas.height - topSpace/2 + 'px';
@@ -414,6 +444,8 @@ function checkMenu(brick) {
   }
   if(matchedIngredients.size === ingredients.length){
     money += menu[order].cost;
+    scoreSound.currentTime =0;
+    scoreSound.play();
     newMenu();
   }
 }
