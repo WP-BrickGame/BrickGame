@@ -191,7 +191,7 @@ function keyUp(e) {
 }
 
 
-//gpt
+
 function collisionCheck() {
   for (let c = 0; c < brickCols; c++) {
     for (let r = 0; r < brickRows; r++) {
@@ -230,7 +230,6 @@ function collisionCheck() {
             ball.dy = -ball.dy;
           }
 
-          checkMenu(b);
           checkMenu(b);
           b.status = 0;
           console.log(b.ingredient+"닿음");
@@ -380,7 +379,7 @@ function gameOver() {
     paddle.x = (canvas.width - canvas.width/6) /2
     return;
   }
-  draw();       // 왜 남은 하트 한 개 안 없어짐? ㅇㅎ
+  draw();       
   document.getElementById("gameover").style.display = "block";
   document.getElementById("gameover").style.width = canvas.width - 35 + 'px';
   document.getElementById("gameover").style.height = canvas.height - 35 + 'px';
