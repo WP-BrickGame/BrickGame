@@ -536,7 +536,7 @@ function drawMenuIcon(startX, barY, barHeight) {
       const icon = itemImgs[imgIdx];
       var padding = 0;
       for (let i=0; i<index; i++) {
-        padding += cvs.measureText(menu_korean[order.menu].ingredient[i] + ' + ').width;
+        padding += cvs.measureText(menu_korean[order].ingredient[i] + ' + ').width;
       }
       if (index != 0) {padding += cvs.measureText(' + ').width};
       padding += cvs.measureText(menu_korean[order].ingredient[index]).width / 2;
