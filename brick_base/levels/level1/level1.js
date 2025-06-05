@@ -331,7 +331,7 @@ function drawBricks() {
     for (let r = 0; r < brickRows; r++) {
       if (bricks[c][r].status === 1) {
         const brickX = c * (brickWidth + brickPadding) + brickLeft;
-        const brickY = r * (brickHeight + brickPadding) + brickTop * 1.5;
+        const brickY = r * (brickHeight + brickPadding) + topSpace + 12.5;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
 
@@ -550,7 +550,7 @@ function drawBackground() {
   cvs.drawImage(
     backgroundImg,
     0,
-    70,
+    topSpace,
     canvas.width,
     canvas.height - topSpace
   );
