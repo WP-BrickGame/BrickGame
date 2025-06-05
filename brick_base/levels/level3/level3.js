@@ -226,7 +226,7 @@ function keyDown(e) {
       setTimeout(()=>{
         drawBackground();
 
-        cvs.fillStyle = 'white';
+        cvs.fillStyle = 'black';
         cvs.font = "40px 'Gothic A1'";
         cvs.textAlign = "center";
         cvs.textBaseline = "middle";
@@ -588,7 +588,7 @@ function drawStartPage() {
 
   cvs.fillText(menuText, textX, textY);
 
-  return barY - 35;
+  return barY - 40;
 }
 
 function drawCountDown(n, t_y) {

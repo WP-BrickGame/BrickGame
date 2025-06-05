@@ -177,8 +177,35 @@ function keyDown(e) {
     lPressed = true;
   }
   else if (!gameStarted && e.code === "Space") {
-      e.preventDefault(); // 스크롤 방지 (중요)
-      start();
+      init();             // init() 안 해줬어서 첫 실행이 이상했음!
+      let y = drawStartPage();
+
+      i = 3;
+      const countdown = setInterval(() => {
+        drawBackground();
+        drawStartPage();
+        drawCountDown(i--, y);
+      }, 1000);
+
+      setTimeout(() => {
+        clearInterval(countdown);
+      }, 3000)
+
+      setTimeout(()=>{
+        drawBackground();
+
+        cvs.fillStyle = 'black';
+        cvs.font = "40px 'Gothic A1'";
+        cvs.textAlign = "center";
+        cvs.textBaseline = "middle";
+
+        cvs.fillText('Start !', canvas.width / 2, canvas.height / 2);
+      }, 4000);
+
+      setTimeout(()=>{
+        e.preventDefault(); // 스크롤 방지 (중요)
+        start();
+      }, 5000);
     }
 }
 
@@ -334,7 +361,7 @@ function draw() {
   if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
     ball.dx = -ball.dx;
   }
-  if (ball.y + ball.dy < ball.radius) {
+  if (ball.y + ball.dy < ball.radius + topSpace) {
     ball.dy = -ball.dy;
   } else if (ball.y + ball.dy > canvas.height - ball.radius - paddle.height - 10) {
     if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
@@ -363,9 +390,6 @@ function draw() {
 function start() {
   gameStarted = true;
   life = 3;
-  if (isGameover) {
-    init();
-  }
   draw();
 }
 
@@ -416,7 +440,7 @@ function checkMenu(brick) {
   //현재 메뉴의 재료 배열
   const ingredients = menu[order].ingredient;
 
-  if(ingredients.includes(brick.ingredient) && !matchedIngredients.has(brick)){
+  if(ingredients.includes(brick.ingredient) && !matchedIngredients.has(brick.ingredient)){
     matchedIngredients.add(brick.ingredient);
   }
   if(matchedIngredients.size === ingredients.length){
@@ -499,4 +523,45 @@ function drawBackground() {
     canvas.width,
     canvas.height - topSpace
   );
+}
+
+function drawStartPage() {
+  const { name, ingredient } = menu_korean[order];
+  const ingText = ingredient.join('  +  ');
+  const menuText = `${name}  :  ${ingText}`;
+
+  cvs.strokeStyle = 'black';     // 테두리 색
+  cvs.lineWidth = 1;           // 테두리 두께
+
+  const barWidth = barSize * 1.5;
+  const barHeight = barSize / 18 * 1.5;
+
+  const barX = canvas.width / 2 - barWidth / 2;
+  const barY = canvas.height / 2 - barHeight / 2;
+
+  cvs.strokeRect(barX, barY, barWidth, barHeight);   // 테두리만 있는 직사각형 그리기 (x, y, width, height)
+  
+  cvs.fillStyle = "black";
+  cvs.font = "40px 'Noto Sans KR'";
+  cvs.textAlign = "center";
+  cvs.textBaseline = "middle";
+
+  const textX = canvas.width / 2;
+  const textY = barY + barHeight / 2;
+
+  cvs.fillText(menuText, textX, textY);
+
+  return barY - 40;
+}
+
+function drawCountDown(n, t_y) {
+  cvs.fillStyle = "black";
+  cvs.font = "40px 'Gothic A1'";
+  cvs.textAlign = "center";
+  cvs.textBaseline = "middle";
+
+  const textX = canvas.width / 2;
+  const textY = t_y;
+
+  cvs.fillText(n, textX, textY);
 }
