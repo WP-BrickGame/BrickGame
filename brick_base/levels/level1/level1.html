@@ -11,13 +11,19 @@
 </head>
 <body>
 	<div class="game">
-		<canvas id="canvas" width="700" height="600"></canvas>
-		<div id="gameover" class="game-over">GAME OVER</div>
-		<div id="win" class="game-over">
-			<button>next stage</button>
-			<button>Home</button>
+		<canvas id="canvas" width="700" height="600">
+		</canvas>
+		<div id="gameover" class="game-over">
+			<button onclick="start();">retry</button>
+			<button onclick="location.href='../../brick.html'">Home</button>
 		</div>
-		<button id="startBtn">시작</button>
+		<div id="win" class="game-over">
+			<p id="score">Score: </p>
+			<div>
+				<button onclick="location.href='../level2/level2.html'">next stage</button>
+				<button onclick="location.href='../../brick.html'">Home</button>
+			</div>
+		</div>
 	</div>
 	<script src="level1.js"></script>
 </body>
