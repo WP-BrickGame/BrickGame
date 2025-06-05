@@ -90,14 +90,15 @@ let topBrickTimer = null;
 
 function init() {
   const urlParams = new URLSearchParams(window.location.search);
+  ballSize = parseInt(urlParams.get('size'), 10) / 10 || 1;
   ballSpeed = parseInt(urlParams.get('speed'), 10) || 4;
 
   ball = {
     x: canvas.width / 2,
-    y: canvas.height - 30,
+    y: canvas.height - 30 * ballSize,
     dx: ballSpeed,
     dy: -ballSpeed,
-    radius: 8
+    radius: 8 * ballSize
   };
 
   paddle = {
@@ -265,7 +266,6 @@ function collisionCheck() {
           }
 
           checkMenu(b);
-          checkMenu(b);
           b.status = 0;
           console.log(b.ingredient+"닿음");
           console.log(matchedIngredients);
@@ -291,8 +291,8 @@ function drawBall() {
       ballImg,
       ball.x - ball.radius,
       ball.y - ball.radius,
-      ball.radius * 2 * ballSize,
-      ball.radius * 2 * ballSize
+      ball.radius * 2,
+      ball.radius * 2
     );
   } else {
     // 이미지가 아직 로딩되지 않았을 경우 fallback으로 빨간 원 그리기
@@ -407,7 +407,7 @@ function gameOver() {
     console.log('life' + life);
     isGameover = false;
     ball.x = canvas.width / 2;
-    ball.y = canvas.height - 30;
+    ball.y = canvas.height - 30 * ballSize;
     paddle.x = (canvas.width - canvas.width/6) /2
     return;
   }
@@ -416,6 +416,7 @@ function gameOver() {
   document.getElementById("gameover").style.width = canvas.width - topSpace/2 + 'px';
   document.getElementById("gameover").style.height = canvas.height - topSpace/2 + 'px';
   gameStarted = false;
+  $('#gameover .score').text('Score: ' + money);
 }
 
 function checkWin() {
@@ -520,6 +521,29 @@ function drawMenu() {
   const textY = barY + barHeight / 2;
 
   cvs.fillText(menuText, textX, textY);
+
+  let startX = barX + (barWidth - cvs.measureText(menuText).width) / 2;
+  drawMenuIcon(startX, barY, barHeight);
+}
+
+function drawMenuIcon(barX, barY, barHeight) {
+  const iconX = startX + cvs.measureText(menu_korean[order].name + ' : ').width;
+  const iconY = barY * 4 + barHeight / 2;
+
+  menu[order].ingredient.forEach( (element, index) => {
+    if (matchedIngredients.has(element)) {
+      const imgIdx = ingredientNoNone.indexOf(element);
+      const icon = itemImgs[imgIdx];
+      var padding = 0;
+      for (let i=0; i<index; i++) {
+        padding += cvs.measureText(menu_korean[order.menu].ingredient[i] + ' + ').width;
+      }
+      if (index != 0) {padding += cvs.measureText(' + ').width};
+      padding += cvs.measureText(menu_korean[order].ingredient[index]).width / 2;
+      cvs.drawImage(icon, iconX + padding, iconY, 40, 40);
+    }
+  }
+  )
 }
 
 function drawBackground() {

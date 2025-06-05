@@ -97,15 +97,15 @@ let topBrickTimer = null;
 
 function init() {
   const urlParams = new URLSearchParams(window.location.search);
-  console.log(urlParams.get('speed'));
+  ballSize = parseInt(urlParams.get('size'), 10) / 10 || 1;
   ballSpeed = parseInt(urlParams.get('speed'), 10) || 4;// 또는 Number()
 
   ball = {
     x: canvas.width / 2,
-    y: canvas.height - 30,
+    y: canvas.height - 30 * ballSize,
     dx: ballSpeed,
     dy: -ballSpeed,
-    radius: 8
+    radius: 8 * ballSize
   };
 
   paddle = {
@@ -257,8 +257,6 @@ function keyUp(e) {
   }
 }
 
-
-//gpt
 function collisionCheck() {
   for (let c = 0; c < brickCols; c++) {
     for (let r = 0; r < brickRows; r++) {
@@ -298,7 +296,6 @@ function collisionCheck() {
           }
 
           checkMenu(b);
-          checkMenu(b);
           b.status = 0;
           console.log(b.ingredient+"닿음");
           console.log(matchedIngredients);
@@ -309,72 +306,6 @@ function collisionCheck() {
             win();
           }
         }
-      }
-    }
-  }
-}
-
-const ballImg = new Image();
-ballImg.src = ImgPath + 'icon/ball.PNG';
-
-function drawBall() {
-  if (ballImg.complete) {
-    // 이미지 중심이 ball.x, ball.y가 되도록 조정
-    cvs.drawImage(
-      ballImg,
-      ball.x - ball.radius,
-      ball.y - ball.radius,
-      ball.radius * 2 * ballSize,
-      ball.radius * 2 * ballSize
-    );
-  } else {
-    // 이미지가 아직 로딩되지 않았을 경우 fallback으로 빨간 원 그리기
-    cvs.beginPath();
-    cvs.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    cvs.fillStyle = "blue";
-    cvs.fill();
-    cvs.closePath();
-  }
-}
-
-const paddleImg = new Image();
-paddleImg.src = ImgPath + 'icon/paddle.png';
-
-function drawPaddle() {
-  if (paddleImg.complete) {
-    cvs.drawImage(
-      paddleImg,
-      paddle.x,
-      canvas.height - paddle.height - 10,
-      paddle.width,
-      paddle.height
-    );
-  }
-  else {
-    cvs.beginPath();
-    cvs.rect(paddle.x, canvas.height - paddle.height - 10, paddle.width, paddle.height);
-    cvs.fillStyle = "rgb(91,162,209)";
-    cvs.fill();
-    cvs.closePath();
-  }
-}
-
-function drawBricks() {
-  for (let c = 0; c < brickCols; c++) {
-    for (let r = 0; r < brickRows; r++) {
-      if (bricks[c][r].status === 1) {
-        const brickX = c * (brickWidth + brickPadding) + brickLeft;
-        const brickY = r * (brickHeight + brickPadding) + topSpace + 12.5;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-
-        cvs.drawImage(
-          brickImgs[bricks[c][r].imgIdx],
-          bricks[c][r].x,
-          bricks[c][r].y,
-          brickWidth,
-          brickHeight
-        )
       }
     }
   }
@@ -439,7 +370,7 @@ function gameOver() {
   if (--life != 0) {
     console.log('life' + life);
     ball.x = canvas.width / 2;
-    ball.y = canvas.height - 30;
+    ball.y = canvas.height - 30 * ballSize;
     paddle.x = (canvas.width - canvas.width/6) /2
     return;
   }
@@ -449,6 +380,7 @@ function gameOver() {
   document.getElementById("gameover").style.width = canvas.width - 35 + 'px';
   document.getElementById("gameover").style.height = canvas.height - 35 + 'px';
   gameStarted = false;
+  $('#gameover .score').text('Score: ' + money);
 }
 
 function checkWin() {
@@ -500,11 +432,77 @@ function showTopBrick(img){
   }, 1000);
 }
 
+const ballImg = new Image();
+ballImg.src = ImgPath + 'icon/ball.PNG';
+
+const paddleImg = new Image();
+paddleImg.src = ImgPath + 'icon/paddle.png';
+
 const lifeImg = new Image();
 lifeImg.src = ImgPath + 'icon/heart.PNG';
 
 const moneyImg = new Image();
 moneyImg.src = ImgPath + 'icon/money.PNG';
+
+function drawBall() {
+  if (ballImg.complete) {
+    // 이미지 중심이 ball.x, ball.y가 되도록 조정
+    cvs.drawImage(
+      ballImg,
+      ball.x - ball.radius,
+      ball.y - ball.radius,
+      ball.radius * 2,
+      ball.radius * 2
+    );
+  } else {
+    // 이미지가 아직 로딩되지 않았을 경우 fallback으로 파란 원 그리기
+    cvs.beginPath();
+    cvs.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    cvs.fillStyle = "blue";
+    cvs.fill();
+    cvs.closePath();
+  }
+}
+
+function drawPaddle() {
+  if (paddleImg.complete) {
+    cvs.drawImage(
+      paddleImg,
+      paddle.x,
+      canvas.height - paddle.height - 10,
+      paddle.width,
+      paddle.height
+    );
+  }
+  else {
+    cvs.beginPath();
+    cvs.rect(paddle.x, canvas.height - paddle.height - 10, paddle.width, paddle.height);
+    cvs.fillStyle = "rgb(91,162,209)";
+    cvs.fill();
+    cvs.closePath();
+  }
+}
+
+function drawBricks() {
+  for (let c = 0; c < brickCols; c++) {
+    for (let r = 0; r < brickRows; r++) {
+      if (bricks[c][r].status === 1) {
+        const brickX = c * (brickWidth + brickPadding) + brickLeft;
+        const brickY = r * (brickHeight + brickPadding) + topSpace + 12.5;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
+
+        cvs.drawImage(
+          brickImgs[bricks[c][r].imgIdx],
+          bricks[c][r].x,
+          bricks[c][r].y,
+          brickWidth,
+          brickHeight
+        )
+      }
+    }
+  }
+}
 
 function drawLife() {
   for (let i = 0; i < life; i++) {
@@ -557,6 +555,44 @@ function drawMenu() {
   const textY = barY + barHeight / 2;
 
   cvs.fillText(menuText, textX, textY);
+
+  let startX = barX + (barWidth - cvs.measureText(menuText).width) / 2;
+  drawMenuIcon(startX, barY, barHeight);
+}
+
+function drawMenuIcon(startX, barY, barHeight) {
+  const iconX = startX + cvs.measureText(menu_korean[order.menu].name + ' : ').width;
+  const iconY = barY * 4 + barHeight / 2;
+
+  var padding = 0;
+  var j = 0;
+  menu[order.menu].ingredient.forEach( (element, index) => {
+    if (matchedIngredients.has(element)) {
+      const imgIdx = ingredientNoNone.indexOf(element);
+      const icon = itemImgs[imgIdx];
+      padding = 0;
+      for (let i=0; i<index; i++) {
+        padding += cvs.measureText(menu_korean[order.menu].ingredient[i] + ' + ').width;
+      }
+      if (index != 0) {padding += cvs.measureText(' + ').width};
+      padding += cvs.measureText(menu_korean[order.menu].ingredient[index]).width / 2;
+      cvs.drawImage(icon, iconX + padding, iconY, 40, 40);
+    }
+  }
+  )
+  padding = 0;
+  for (let i=0; i<menu_korean[order.menu].ingredient.length; i++) {
+        padding += cvs.measureText(menu_korean[order.menu].ingredient[i]).width;
+      }
+
+  if (matchedIngredients.has(toppings[order.topping])) {
+    padding += cvs.measureText(toppings_korean[order.topping]).width / 2;
+
+    const imgIdx = ingredientNoNone.indexOf(toppings[order.topping]);
+    const icon = itemImgs[imgIdx];
+
+    cvs.drawImage(icon, iconX + padding, iconY, 40, 40);
+  }
 }
 
 function drawBackground() {
