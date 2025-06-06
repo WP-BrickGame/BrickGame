@@ -372,7 +372,7 @@ function gameOver() {
     paddle.x = (canvas.width - canvas.width/6) /2
     return;
   }
-  draw();       // 왜 남은 하트 한 개 안 없어짐? ㅇㅎ
+  draw();       
   document.getElementById("gameover").style.display = "block";
   document.getElementById("gameover").style.width = canvas.width - topSpace/2 + 'px';
   document.getElementById("gameover").style.height = canvas.height - topSpace/2 + 'px';
