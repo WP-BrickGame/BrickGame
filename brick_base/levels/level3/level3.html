@@ -16,27 +16,28 @@
 		<canvas id="canvas" width="700" height="600">
 		</canvas>
 		<div id="gameover" class="over">
-			<img src="../../../imgs/logo/gameover.png" width="800px"/>
-			<p class="score">Score : </p>
-			<div>
-				<button onclick="start();" class="game-button">
-					<img class="button-img" src="../../../imgs/button/game_menu.png" alt="retry"/><span>Retry</span>
-				</button>
-				<button onclick="location.href='../../brick.html'" class="game-button">
-					<img class="button-img" src="../../../imgs/button/game_menu.png" alt="Home"/><span>Home</span>
-				</button>
+			<div class="over-logo">
+				<img src="../../../imgs/logo/gameover.png" class="logo" width="800px"/>
+				<p class="score">Score : </p>
+				<div id="button">
+					<button onclick="start();" class="game-button">
+						<img class="button-img" src="../../../imgs/button/game_menu.png" alt="retry"/><span>Retry</span>
+					</button>
+					<button onclick="location.href='../../brick.html'" class="game-button">
+						<img class="button-img" src="../../../imgs/button/game_menu.png" alt="Home"/><span>Home</span>
+					</button>
+				</div>
 			</div>
 		</div>
 		<div id="win" class="over">
-			<img src="../../../imgs/logo/clear.png" width="800px"/>
-			<p class="score">Score : </p>
-			<div>
-				<button onclick="location.href='../level3/level3.html'" class="game-button">
-					<img class="button-img" src="../../../imgs/button/game_menu.png" alt="next-stage"/><span>N</span>
-				</button>
-				<button onclick="location.href='../../brick.html'" class="game-button">
-					<img class="button-img" src="../../../imgs/button/game_menu.png" alt="Home"/><span>Home</span>
-				</button>
+			<div class="over-logo">
+				<img src="../../../imgs/logo/clear.png" class="logo" width="520px"/>
+				<p class="score">Score : </p>
+				<div id="button">
+					<button onclick="location.href='../../brick.html'" class="game-button">
+						<img class="button-img" src="../../../imgs/button/game_menu.png" alt="Home"/><span>Home</span>
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>

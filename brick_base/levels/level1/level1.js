@@ -527,6 +527,8 @@ function win() {
   document.getElementById("win").style.height = canvas.height - 35  + 'px';
 
   clearInterval(timerInterval);
+
+  $('#win .score').text('Score : ' + money);
 }
 
 function newMenu() {
