@@ -481,8 +481,8 @@ function win() {
   roundLoopSound.pause();
 
   document.getElementById("win").style.display = "block";
-  document.getElementById("win").style.width = canvas.width - topSpace/2 + 'px';
-  document.getElementById("win").style.height = canvas.height - topSpace/2 + 'px';
+  document.getElementById("win").style.width = canvas.width - 35+ 'px';
+  document.getElementById("win").style.height = canvas.height - 35 + 'px';
 }
 
 function newMenu() {

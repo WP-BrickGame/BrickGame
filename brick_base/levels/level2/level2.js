@@ -176,7 +176,7 @@ function resizeCanvas() {
   canvas.width = window.innerWidth - 1;
   canvas.height = window.innerHeight - 1;
 
-  paddle.width = canvas.width / 7,
+  paddle.width = (window.innerWidth - 1) / 7,
 
   drawBackground();
 }
@@ -424,8 +424,8 @@ function gameOver() {
   }
   draw();       
   document.getElementById("gameover").style.display = "block";
-  document.getElementById("gameover").style.width = canvas.width - topSpace/2 + 'px';
-  document.getElementById("gameover").style.height = canvas.height - topSpace/2 + 'px';
+  document.getElementById("gameover").style.width = canvas.width - 35 + 'px';
+  document.getElementById("gameover").style.height = canvas.height - 35 + 'px';
   gameStarted = false;
   $('#gameover .score').text('Score: ' + money);
 }
@@ -447,8 +447,8 @@ function win() {
   roundLoopSound.pause();
   
   document.getElementById("win").style.display = "block";
-  document.getElementById("win").style.width = canvas.width - topSpace/2 + 'px';
-  document.getElementById("win").style.height = canvas.height - topSpace/2 + 'px';
+  document.getElementById("win").style.width = canvas.width - 35 + 'px';
+  document.getElementById("win").style.height = canvas.height - 35 + 'px';
 }
 
 function newMenu() {
