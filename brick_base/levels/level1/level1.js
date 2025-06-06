@@ -330,9 +330,6 @@ function collisionCheck() {
   }
 }
 
-const ballImg = new Image();
-ballImg.src = ImgPath + 'icon/ball.PNG';
-
 function drawBall() {
   if (ballImg.complete) {
     // 이미지 중심이 ball.x, ball.y가 되도록 조정
@@ -352,10 +349,6 @@ function drawBall() {
     cvs.closePath();
   }
 }
-
-const paddleImg = new Image();
-paddleImg.src = ImgPath + 'icon/paddle.png';
-
 function drawPaddle() {
   if (paddleImg.complete) {
     cvs.drawImage(
@@ -719,6 +712,8 @@ function updateTimerDisplay(){
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   timerText = `${minutes} : ${seconds.toString().padStart(2,"0")}`;
+
+}
 function drawStartPage() {
   const { name, ingredient } = menu_korean[order];
   const ingText = ingredient.join('  +  ');
