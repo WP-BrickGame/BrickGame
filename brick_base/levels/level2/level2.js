@@ -458,7 +458,7 @@ function drawBall() {
 }
 
 function startTimer(){
-  timeLeft = 8;
+  timeLeft = 66;
   timerInterval = setInterval(()=>{
     timeLeft --;
     updateTimerDisplay();
