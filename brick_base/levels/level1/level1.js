@@ -1,3 +1,4 @@
+const barSound = document.getElementById("bar-sound");
 const gameOverSound = document.getElementById("gameover-sound");
 const scoreSound = document.getElementById("score-sound");
 const brickSound = document.getElementById("brick-sound");
@@ -168,6 +169,7 @@ window.onload = () => {
 
 function run() {
   init();             // init() 안 해줬어서 첫 실행이 이상했음!
+  drawFullBackground();
 
   cvs.fillStyle = 'black';
   cvs.font = "72px 'Gothic A1'";
@@ -180,7 +182,7 @@ function run() {
   roundStartSound.play().catch(e => console.warn('roundStartSound error', e));
 
   setTimeout(() => {
-    drawBackground();
+    drawFullBackground();
     startCount();
   }, 1000)
 
@@ -189,7 +191,7 @@ function run() {
 
     i = 3;
     const countdown = setInterval(() => {
-      drawBackground();
+      drawFullBackground();
       drawStartPage();
       drawCountDown(i--, y);
 
@@ -197,7 +199,7 @@ function run() {
     }, 1000);
 
     setTimeout(()=>{
-      drawBackground();
+      drawFullBackground();
 
       cvs.fillStyle = 'black';
       cvs.font = "40px 'Gothic A1'";
@@ -417,6 +419,8 @@ function draw() {
   } else if (ball.y + ball.dy > canvas.height - ball.radius - paddle.height - 10) {
     if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
       ball.dy = -ball.dy;
+      barSound.currentTime=0;
+      barSound.play();
     } else {
       gameOver();
       if (isGameover) {
@@ -696,15 +700,25 @@ function drawBackground() {
   );
 }
 
+function drawFullBackground() {
+  cvs.drawImage(
+    backgroundImg,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+}
+
 function startTimer(){
-  timeLeft = 10;
+  timeLeft = 180;
   timerInterval = setInterval(()=>{
     timeLeft --;
     updateTimerDisplay();
 
     if(timeLeft <=0){
       clearInterval(timerInterval);
-      win();
+      gameOver();
     }
   },1000);
 }

@@ -152,6 +152,7 @@ window.onload = () => {
 
 function run() {
   init();             // init() 안 해줬어서 첫 실행이 이상했음!
+  drawFullBackground();
 
   cvs.fillStyle = 'black';
   cvs.font = "72px 'Gothic A1'";
@@ -161,7 +162,7 @@ function run() {
   cvs.fillText('Level 2', canvas.width / 2, canvas.height / 2)
 
   setTimeout(() => {
-    drawBackground();
+    drawFullBackground();
     startCount();
   }, 1000)
 
@@ -170,7 +171,7 @@ function run() {
 
     i = 3;
     const countdown = setInterval(() => {
-      drawBackground();
+      drawFullBackground();
       drawStartPage();
       drawCountDown(i--, y);
 
@@ -178,7 +179,7 @@ function run() {
     }, 1000);
 
     setTimeout(()=>{
-      drawBackground();
+      drawFullBackground();
 
       cvs.fillStyle = 'black';
       cvs.font = "40px 'Gothic A1'";
@@ -571,6 +572,16 @@ function drawBackground() {
     topSpace,
     canvas.width,
     canvas.height - topSpace
+  );
+}
+
+function drawFullBackground() {
+  cvs.drawImage(
+    backgroundImg,
+    0,
+    0,
+    canvas.width,
+    canvas.height
   );
 }
 
