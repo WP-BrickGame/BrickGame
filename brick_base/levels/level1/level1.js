@@ -711,14 +711,14 @@ function drawFullBackground() {
 }
 
 function startTimer(){
-  timeLeft = 66;
+  timeLeft = 10;
   timerInterval = setInterval(()=>{
     timeLeft --;
     updateTimerDisplay();
 
-    if(timeLeft <=0){
+    if(timeLeft ==0){
       clearInterval(timerInterval);
-      gameOver();
+      win();
     }
   },1000);
 }
