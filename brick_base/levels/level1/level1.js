@@ -492,8 +492,8 @@ function win() {
   roundLoopSound.currentTime = 0;
 
   document.getElementById("win").style.display = "block";
-  document.getElementById("win").style.width = canvas.width - topSpace/2 + 'px';
-  document.getElementById("win").style.height = canvas.height - topSpace/2 + 'px';
+  document.getElementById("win").style.width = canvas.width -35 + 'px';
+  document.getElementById("win").style.height = canvas.height -35  + 'px';
 
   clearInterval(timerInterval);
 }
@@ -695,7 +695,7 @@ function drawBackground() {
 }
 
 function startTimer(){
-  timeLeft = 10;
+  timeLeft = 8;
   timerInterval = setInterval(()=>{
     timeLeft --;
     updateTimerDisplay();
