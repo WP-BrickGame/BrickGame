@@ -2,6 +2,7 @@ const barSound = document.getElementById("bar-sound");
 const gameOverSound = document.getElementById("gameover-sound");
 const scoreSound = document.getElementById("score-sound");
 const brickSound = document.getElementById("brick-sound");
+const clearSound = document.getElementById("clear-sound");
 
 const roundStartSound = document.getElementById("round-start-sound");
 const roundLoopSound = document.getElementById("round-loop-sound");
@@ -152,7 +153,29 @@ menu_korean = [
 window.addEventListener("load", () => {
   resizeCanvas()
 });
+
 window.addEventListener("resize", resizeCanvas);
+
+// 화면 클릭하면 run
+let Started = false;
+window.addEventListener("click", ()=>{
+  if(!Started){
+    Started = true;
+
+    const forStart = document.getElementById("forStart");
+    const background = document.querySelector(".background");
+    if(forStart) {
+      forStart.style.display = "none";
+      background.style.display = "none";
+    }
+
+    roundStartSound.currentTime = 0;
+    roundStartSound.play();
+
+    run();
+  }
+})
+
 
 function resizeCanvas() {
   canvas.width = window.innerWidth - 1;
@@ -163,9 +186,9 @@ function resizeCanvas() {
   drawBackground();
 }
 
-window.onload = () => {
-  run();
-};
+// window.onload = () => {
+//   run();
+// };
 
 function run() {
   init();             // init() 안 해줬어서 첫 실행이 이상했음!
@@ -315,10 +338,11 @@ function collisionCheck() {
             ball.dy = -ball.dy;
           }
 
-          checkMenu(b);
+          if(checkMenu(b)){
+            brickSound.currentTime =0;
+            brickSound.play();
+          }
           b.status = 0;
-          brickSound.currentTime =0;
-          brickSound.play();
           console.log(b.ingredient+"닿음");
           console.log(matchedIngredients);
 
@@ -495,8 +519,9 @@ function win() {
   isGameover = true;
 
   roundLoopSound.pause();
-  roundLoopSound.currentTime = 0;
-
+  // roundLoopSound.currentTime = 0;
+  clearSound.currentTime =0;
+  clearSound.play();
   document.getElementById("win").style.display = "block";
   document.getElementById("win").style.width = canvas.width - topSpace/2 + 'px';
   document.getElementById("win").style.height = canvas.height - topSpace/2 + 'px';
@@ -522,6 +547,7 @@ function newMenu() {
   })
 }
 
+//true, false 반환하도록 수정
 function checkMenu(brick) {
   //현재 메뉴의 재료 배열
   const ingredients = menu[order].ingredient;
@@ -533,13 +559,15 @@ function checkMenu(brick) {
         drawMenu(); //이미지 전달
       }
     }
+    if(matchedIngredients.size === ingredients.length){
+      money += menu[order].cost;
+      scoreSound.currentTime =0;
+      scoreSound.play();
+      newMenu();
+    }
+    return true;
   }
-  if(matchedIngredients.size === ingredients.length){
-    money += menu[order].cost;
-    scoreSound.currentTime =0;
-    scoreSound.play();
-    newMenu();
-  }
+  return false;
 }
 
 function showTopBrick(img){

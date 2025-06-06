@@ -69,7 +69,7 @@ button {
     font-size: 28px;
     color: white; /* 필요 시 색상 조정 */
     pointer-events: none; /* 클릭 방해하지 않도록 */
-	z-index: 100px;
+		z-index: 100;
   }
 
   .score {
@@ -80,4 +80,25 @@ button {
 	position: absolute;
 	top: 30%;
     left: 45%;
+  }
+
+  #forStart{
+  	position: fixed;
+  	width: 100vw;
+  	height: 100vh;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+  	font-size: 40px;
+  	color: black;
+  	font-family: 'Noto Sans KR';
+  	text-align: center;
+  }
+
+  .background{
+  	position: absolute;
+  	top: 0;
+  	left: 0;
+  	width: 100vw;
+  	height: 100vh;
   }
