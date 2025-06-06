@@ -3,7 +3,7 @@ var ballSize = 1;
 var ballSpeed = 4;
 
 // 패들 속도
-var paddleSpeed = 10;
+var paddleSpeed = 13;
 
 // 목숨
 let life = 3;

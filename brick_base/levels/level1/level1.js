@@ -11,7 +11,7 @@ var ballSize = 1;
 var ballSpeed = 4;
 
 // 패들 속도
-var paddleSpeed = 7;
+var paddleSpeed = 12;
 
 // 목숨
 let life = 3;
@@ -241,6 +241,8 @@ function init() {
 
   document.getElementById("gameover").style.display = "none";
   document.getElementById("win").style.display = "none";
+
+  newMenu();
 }
 
 function initBricks() {
