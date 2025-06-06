@@ -136,6 +136,113 @@ button{
     top: 3vh;
     left: 3vw;
 }
+/*게임 방법*/
+#How-text{
+    text-align: center;
+}
+#How-text p{
+    margin: 0;
+}
+#How-text > p:nth-of-type(odd) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(255,43,135);
+    color: white;
+    font-weight: 700;
+    padding: 0 1.5vw;
+    border-radius: 25px;
+    text-align: center;
+    height: 2.5vw;
+    line-height: 2.5vw;
+    margin-bottom: 2vw;
+    font-size: medium;
+}
+#How-text > p:nth-of-type(even){
+    font-weight: 700;
+    line-height: 5vh;
+    margin-bottom: 5vw;
+    font-size: large;
+}
+#How-text p:last-of-type{
+    margin-bottom: 0;
+}
+
+/*레시피*/
+.Recipe-menu{
+    width: 80vw;
+    height: 70vh;
+    top: 30vh;
+
+    display: flex;              /* flex 컨테이너 */
+    justify-content: center;    /* 가로 중앙 정렬 */
+    align-items: center;        /* 세로 중앙 정렬 */
+}
+
+#Recipe-stage1, #Recipe-stage2, #Recipe-stage3 { /*div별 줄 정렬*/
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+#Recipe-stage1, #Recipe-stage2{
+    margin-bottom: 1vw;
+}
+
+.Recipe-stage{ /*화면 크기*/
+    display: block;
+}
+.Recipe-img{ /*가로정렬*/
+
+    padding: 1vw;
+    margin: 0 2vw;
+
+    display: flex;           
+    justify-content: center; 
+    flex-wrap: wrap; 
+    flex-direction: row; 
+    width: 20vw;
+}
+.Recipe-img p:first-child {
+    margin-bottom: 1vh;
+    padding: 0.5vw;
+    width: 100%;
+    text-align: center; 
+    flex-basis: 100%;
+    border-bottom: 1px solid rgb(255,43,135);
+    color: rgb(255,43,135);
+    font-weight: 700;
+    font-size: large;
+}
+.img-box{
+    width: 4vw;
+    height: 4vw;
+    background-color: white;
+    border: 2px solid rgb(255,43,135);
+    border-radius: 15px;
+    text-align: center;
+    margin: 0.5vw 0.25vw;
+    padding: 0.7vw;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    vertical-align: middle;
+}
+#Recipe-stage3 .Recipe-img > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 500
+}
+#Recipe-stage3 .Recipe-img > div p{
+    margin: 0.5vw 0;
+}
 
 /*설정 화면*/
 .option-container{
@@ -193,9 +300,9 @@ button{
 	gap: 300px;
 }
 
-#level1:hover { content: url("Shaved Ice/logo/1_h.png"); transform: scale(1.1);}
-#level2:hover { content: url("Shaved Ice/logo/2_h.png"); transform: scale(1.1); }
-#level3:hover { content: url("Shaved Ice/logo/3_h.png"); transform: scale(1.1); }
+#level1:hover { content: url("../imgs/logo/1_h.png"); transform: scale(1.1);}
+#level2:hover { content: url("../imgs/logo/2_h.png"); transform: scale(1.1); }
+#level3:hover { content: url("../imgs/logo/3_h.png"); transform: scale(1.1); }
 
 .level-btn {
   width: 110px;       

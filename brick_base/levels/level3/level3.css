@@ -30,26 +30,16 @@ button {
   cursor: pointer;
 }
 
-.game-over{
+.over{
+	background-color: rgba(0, 0, 0, 80%);
+	top: 0%;
+	left: 0%;
 	display: none;
 	position: absolute;
-	top: 40%;
-	left: 30%;
 	font-size: 48px;
 	color: red;
 	padding: 20px;
 }
-
-#gameover {
-	background-color: rgba(0, 0, 0, 80%);
-	top: 0;
-	left: 0;
-}
-
-#win {
-	background-color: rgba(0, 0, 0, 80%);
-}
-
 .game-button {
 	position: relative;
 }
@@ -81,4 +71,9 @@ button {
 	position: absolute;
 	top: 30%;
     left: 45%;
+  }
+    #button{
+	position: absolute;
+	top: 60%;
+	left: 40%;
   }

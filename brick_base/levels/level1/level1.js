@@ -523,8 +523,8 @@ function win() {
   clearSound.currentTime =0;
   clearSound.play();
   document.getElementById("win").style.display = "block";
-  document.getElementById("win").style.width = canvas.width - topSpace/2 + 'px';
-  document.getElementById("win").style.height = canvas.height - topSpace/2 + 'px';
+  document.getElementById("win").style.width = canvas.width -35 + 'px';
+  document.getElementById("win").style.height = canvas.height -35  + 'px';
 
   clearInterval(timerInterval);
 }
@@ -739,14 +739,16 @@ function drawFullBackground() {
 }
 
 function startTimer(){
-  timeLeft = 180;
+  timeLeft = 66;
   timerInterval = setInterval(()=>{
     timeLeft --;
     updateTimerDisplay();
 
-    if(timeLeft <=0){
+    if(timeLeft ==0){
       clearInterval(timerInterval);
-      gameOver();
+      clearSound.currentTime =0;
+      clearSound.play();
+      win();
     }
   },1000);
 }

@@ -17,6 +17,11 @@ let matchedIngredients = new Set();
 
 var ingNum = 0;
 
+//타이머
+let timeLeft = 180;
+let timerInterval = null;
+let timerText = "3 : 00";
+
 // 캔버스
 const canvas = document.getElementById("canvas");
 const cvs = canvas.getContext("2d");
@@ -196,6 +201,8 @@ function run() {
 }
 
 function init() {
+  startTimer();
+
   const urlParams = new URLSearchParams(window.location.search);
   ballSize = parseInt(urlParams.get('size'), 10) / 10 || 1;
   ballSpeed = parseInt(urlParams.get('speed'), 10) || 4;
@@ -450,6 +457,26 @@ function drawBall() {
   }
 }
 
+function startTimer(){
+  timeLeft = 66;
+  timerInterval = setInterval(()=>{
+    timeLeft --;
+    updateTimerDisplay();
+
+    if(timeLeft <=0){
+      clearInterval(timerInterval);
+      win();
+    }
+  },1000);
+}
+
+function updateTimerDisplay(){
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  timerText = `${minutes} : ${seconds.toString().padStart(2,"0")}`;
+
+}
+
 function drawPaddle() {
   if (paddleImg.complete) {
     cvs.drawImage(
@@ -540,6 +567,10 @@ function drawMenu() {
   const textY = barY + barHeight / 2;
 
   cvs.fillText(menuText, textX, textY);
+
+  const timerY = barY + barHeight + 32;  // 메뉴 바 아래 + 글자 높이만큼 떨어진 위치
+  cvs.font = "30px 'Noto Sans KR'";
+  cvs.fillText(`⏰ ${timerText}`,canvas.width /15, timerY );
 
   let startX = barX + (barWidth - cvs.measureText(menuText).width) / 2;
   drawMenuIcon(startX, barY, barHeight);
