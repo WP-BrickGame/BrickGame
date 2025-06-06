@@ -141,6 +141,8 @@ function resizeCanvas() {
   canvas.width = window.innerWidth - 1;
   canvas.height = window.innerHeight - 1;
 
+  paddle.width = canvas.width / 7,
+
   drawBackground();
 }
 
