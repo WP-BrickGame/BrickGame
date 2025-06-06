@@ -795,3 +795,7 @@ function drawCountDown(n, t_y) {
 
   cvs.fillText(n, textX, textY);
 }
+
+function nextStage() {
+  location.href=`../level2/level2.html?size=${ballSize}&speed=${ballSpeed}`;
+}
