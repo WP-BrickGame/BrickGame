@@ -186,9 +186,6 @@ function resizeCanvas() {
   drawBackground();
 }
 
-// window.onload = () => {
-//   run();
-// };
 
 function run() {
   init();             // init() 안 해줬어서 첫 실행이 이상했음!
@@ -202,7 +199,7 @@ function run() {
   cvs.fillText('Level 1', canvas.width / 2, canvas.height / 2)
 
   roundStartSound.currentTime = 0;
-  roundStartSound.play().catch(e => console.warn('roundStartSound error', e));
+  roundStartSound.play();
 
   setTimeout(() => {
     drawFullBackground();
@@ -491,7 +488,6 @@ function gameOver() {
     return;
   } else{
     roundLoopSound.pause();
-    roundLoopSound.currentTime = 0;
     gameOverSound.currentTime = 0;
     gameOverSound.play();
   }
@@ -519,9 +515,7 @@ function win() {
   isGameover = true;
 
   roundLoopSound.pause();
-  // roundLoopSound.currentTime = 0;
-  clearSound.currentTime =0;
-  clearSound.play();
+
   document.getElementById("win").style.display = "block";
   document.getElementById("win").style.width = canvas.width - 35 + 'px';
   document.getElementById("win").style.height = canvas.height - 35  + 'px';

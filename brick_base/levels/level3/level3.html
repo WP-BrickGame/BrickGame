@@ -13,6 +13,8 @@
 </head>
 <body>
 	<div class="game">
+		<img src="../../../imgs/background.png" alt="배경" class="background">
+		<div id="forStart">시작하려면 마우스로 화면을 클릭하세요.</div>
 		<canvas id="canvas" width="700" height="600">
 		</canvas>
 		<div id="gameover" class="over">
@@ -41,6 +43,14 @@
 			</div>
 		</div>
 	</div>
+	<audio id="bar-sound" src="../../sounds/barTouched.mp3"></audio>
+	<audio id="gameover-sound" src="../../sounds/gameOver.mp3"></audio>
+	<audio id="score-sound" src="../../sounds/scoreIncrease.mp3"></audio>
+	<audio id="brick-sound" src="../../sounds/brickTouched.mp3"></audio>
+	<audio id="clear-sound" src="../../sounds/stageClear.mp3"></audio>
+
+	<audio id="round-start-sound" src="../../sounds/newRound2.mp3"></audio>
+	<audio id="round-loop-sound" src="../../sounds/newRoundContinue.mp3" loop></audio>
 	<script src="level3.js"></script>
 </body>
 </html>
