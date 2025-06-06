@@ -23,7 +23,16 @@ let money = 0;
 var order;
 let matchedIngredients = new Set();
 
+let showIngredients = false;
+let orderIngredientsArr = [];
+let orderIngredientsNames = null;
+
 var ingNum = 0;
+
+//타이머
+let timeLeft = 180;
+let timerInterval = null;
+let timerText = "3 : 00";
 
 // 캔버스
 const canvas = document.getElementById("canvas");
@@ -204,9 +213,12 @@ function run() {
 }
 
 function init() {
+  startTimer();
+
   const urlParams = new URLSearchParams(window.location.search);
   ballSize = parseInt(urlParams.get('size'), 10) / 10 || 1;
   ballSpeed = parseInt(urlParams.get('speed'), 10) || 4;
+
 
   ball = {
     x: canvas.width / 2,
@@ -229,8 +241,6 @@ function init() {
 
   document.getElementById("gameover").style.display = "none";
   document.getElementById("win").style.display = "none";
-
-  newMenu();
 }
 
 function initBricks() {
@@ -320,6 +330,71 @@ function collisionCheck() {
   }
 }
 
+const ballImg = new Image();
+ballImg.src = ImgPath + 'icon/ball.PNG';
+
+function drawBall() {
+  if (ballImg.complete) {
+    // 이미지 중심이 ball.x, ball.y가 되도록 조정
+    cvs.drawImage(
+      ballImg,
+      ball.x - ball.radius,
+      ball.y - ball.radius,
+      ball.radius * 2 * ballSize,
+      ball.radius * 2 * ballSize
+    );
+  } else {
+    // 이미지가 아직 로딩되지 않았을 경우 fallback으로 빨간 원 그리기
+    cvs.beginPath();
+    cvs.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    cvs.fillStyle = "blue";
+    cvs.fill();
+    cvs.closePath();
+  }
+}
+
+const paddleImg = new Image();
+paddleImg.src = ImgPath + 'icon/paddle.png';
+
+function drawPaddle() {
+  if (paddleImg.complete) {
+    cvs.drawImage(
+      paddleImg,
+      paddle.x,
+      canvas.height - paddle.height - 10,
+      paddle.width,
+      paddle.height
+    );
+  }
+  else {
+    cvs.beginPath();
+    cvs.rect(paddle.x, canvas.height - paddle.height - 10, paddle.width, paddle.height);
+    cvs.fillStyle = "rgb(91,162,209)";
+    cvs.fill();
+    cvs.closePath();
+  }
+}
+
+function drawBricks() {
+  for (let c = 0; c < brickCols; c++) {
+    for (let r = 0; r < brickRows; r++) {
+      if (bricks[c][r].status === 1) {
+        const brickX = c * (brickWidth + brickPadding) + brickLeft;
+        const brickY = r * (brickHeight + brickPadding) + topSpace + 12.5;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
+
+        cvs.drawImage(
+          brickImgs[bricks[c][r].imgIdx],
+          bricks[c][r].x,
+          bricks[c][r].y,
+          brickWidth,
+          brickHeight
+        )
+      }
+    }
+  }
+}
 function draw() {
   cvs.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -398,11 +473,12 @@ function gameOver() {
     gameOverSound.currentTime = 0;
     gameOverSound.play();
   }
-  draw();       // 왜 남은 하트 한 개 안 없어짐? ㅇㅎ
+  draw();     
   document.getElementById("gameover").style.display = "block";
-  document.getElementById("gameover").style.width = canvas.width - topSpace/2 + 'px';
-  document.getElementById("gameover").style.height = canvas.height - topSpace/2 + 'px';
+  document.getElementById("gameover").style.width = canvas.width -35 + 'px';
+  document.getElementById("gameover").style.height = canvas.height -35 + 'px';
   gameStarted = false;
+  clearInterval(timerInterval);
   $('#gameover .score').text('Score: ' + money);
 }
 
@@ -426,13 +502,26 @@ function win() {
   document.getElementById("win").style.display = "block";
   document.getElementById("win").style.width = canvas.width - topSpace/2 + 'px';
   document.getElementById("win").style.height = canvas.height - topSpace/2 + 'px';
+
+  clearInterval(timerInterval);
 }
 
 function newMenu() {
   order = Math.floor(Math.random()*menu.length);
   matchedIngredients.clear();
+
+  orderIngredientsNames = menu[order].ingredient;
+
+
+  //검사
   console.log(menu[order]);
   console.log(menu[order].ingredient);
+
+  //재료 이미지 배열 구성
+  orderIngredientsArr = ingredients.map(name =>{
+    const idx = ingredientNoNone.indexOf(name);
+    return itemImgs[idx];
+  })
 }
 
 function checkMenu(brick) {
@@ -441,6 +530,11 @@ function checkMenu(brick) {
 
   if(ingredients.includes(brick.ingredient) && !matchedIngredients.has(brick.ingredient)){
     matchedIngredients.add(brick.ingredient);
+    for(let i = 0; i<orderIngredientsArr; i++){
+      if(brick.ingredient == orderIngredientsNames[i]){
+        drawMenu(); //이미지 전달
+      }
+    }
   }
   if(matchedIngredients.size === ingredients.length){
     money += menu[order].cost;
@@ -570,6 +664,10 @@ function drawMenu() {
 
   cvs.fillText(menuText, textX, textY);
 
+  const timerY = barY + barHeight + 32;  // 메뉴 바 아래 + 글자 높이만큼 떨어진 위치
+  cvs.font = "30px 'Noto Sans KR'";
+  cvs.fillText(`⏰ ${timerText}`,canvas.width /15, timerY );
+
   let startX = barX + (barWidth - cvs.measureText(menuText).width) / 2;
   drawMenuIcon(startX, barY, barHeight);
 }
@@ -604,6 +702,23 @@ function drawBackground() {
   );
 }
 
+function startTimer(){
+  timeLeft = 180;
+  timerInterval = setInterval(()=>{
+    timeLeft --;
+    updateTimerDisplay();
+
+    if(timeLeft <=0){
+      clearInterval(timerInterval);
+      gameOver();
+    }
+  },1000);
+}
+
+function updateTimerDisplay(){
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  timerText = `${minutes} : ${seconds.toString().padStart(2,"0")}`;
 function drawStartPage() {
   const { name, ingredient } = menu_korean[order];
   const ingText = ingredient.join('  +  ');
