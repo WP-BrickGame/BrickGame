@@ -1,0 +1,83 @@
+* {
+	font-family: 'Gothic A1', 'Noto Sans KR', serif;
+}
+
+body{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	margin: 0;
+}
+
+.game{
+	text-align: center;
+	position: relative;
+}
+
+canvas{
+	display: block;
+	margin: 0 auto;
+	background-color: white;
+	border: 1px solid black;
+}
+
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.game-over{
+	display: none;
+	position: absolute;
+	top: 40%;
+	left: 30%;
+	font-size: 48px;
+	color: red;
+	padding: 20px;
+}
+
+#gameover {
+	background-color: rgba(0, 0, 0, 80%);
+	top: 0;
+	left: 0;
+}
+
+#win {
+	background-color: rgba(0, 0, 0, 80%);
+}
+.game-button {
+	position: relative;
+}
+
+.button-img {
+	width: 200px;
+	background: none;
+	top: 200px;
+}
+
+.game-button span {
+	font-family: 'Noto Sans KR', serif;
+	font-weight: 100;
+    position: absolute;
+    top: 43%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28px;
+    color: white; /* 필요 시 색상 조정 */
+    pointer-events: none; /* 클릭 방해하지 않도록 */
+	z-index: 100px;
+  }
+
+  .score {
+	font-family: 'Noto Sans KR', serif;
+	font-weight: 100;
+	font-size: 24px;
+	color: white;
+	position: absolute;
+	top: 30%;
+    left: 45%;
+  }

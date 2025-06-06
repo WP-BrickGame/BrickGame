@@ -1,0 +1,17 @@
+brickout.html
+brickout.css
+brickout.js
+.DS_Store
+
+# 상위 폴더 무시
+../../../*
+
+# 시스템 관련 무시
+*.lnk
+*.ini
+*.dat
+*.regtrans-ms
+.vscode/
+AppData/
+OneDrive/
+*.pdf
