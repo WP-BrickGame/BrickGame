@@ -1,5 +1,17 @@
+const barSound = document.getElementById("bar-sound");
+const gameOverSound = document.getElementById("gameover-sound");
+const scoreSound = document.getElementById("score-sound");
+const brickSound = document.getElementById("brick-sound");
+
+const roundStartSound = document.getElementById("round-start-sound");
+const roundLoopSound = document.getElementById("round-loop-sound");
+
 // 사용자 선택
 var ballSize = 1;
+var ballSpeed = 4;
+
+// 패들 속도
+var paddleSpeed = 7;
 
 // 목숨
 let life = 3;
@@ -52,16 +64,95 @@ const iconSpacing = 15;
 
 const barSize = 900;
 
+let topBrickImg = null;
+let topBrickTimer = null;
+
 const ImgPath = '../../../imgs/';
+const itemPath = '../../../imgs/png/';
 const brickPath = ImgPath + 'brick/';
 const pngPath = ImgPath + 'png/';
 const imgExt = '.png';
+
 const ingredients = ['none', 'ice', 'redbean', 'injeolmi', 
                     'icecream_cho','sirup_cho',
                     'sirup_milk',
                     ];
+
+const ingredientNoNone = ['ice', 'redbean', 'injeolmi', 
+                          'icecream_cho','sirup_cho',
+                          'sirup_milk',
+                           ];
+
 const backgroundImg = new Image();
 backgroundImg.src = ImgPath + 'background.png';
+
+const ballImg = new Image();
+ballImg.src = ImgPath + 'icon/ball.PNG';
+
+const paddleImg = new Image();
+paddleImg.src = ImgPath + 'icon/paddle.png';
+
+const lifeImg = new Image();
+lifeImg.src = ImgPath + 'icon/heart.PNG';
+
+const moneyImg = new Image();
+moneyImg.src = ImgPath + 'icon/money.PNG';
+
+brickImgs = ingredients.map( name => {
+    const img = new Image();
+    img.src = brickPath + name + imgExt;
+    return img;
+  }
+)
+
+itemImgs = ingredientNoNone.map( name => {
+  const img = new Image();
+  img.src = itemPath + name + imgExt;
+  return img;
+}
+)
+
+menu = [
+  {
+    name: 'redbean',
+    ingredient: ['ice', 'redbean', 'sirup_milk'],
+    cost: 100
+  },
+  {
+    name: 'injeolmi',
+    ingredient: ['ice', 'injeolmi', 'sirup_milk'],
+    cost: 100
+  },
+  {
+    name: 'choco',
+    ingredient: ['ice', 'icecream_cho', 'sirup_cho'],
+    cost: 100
+  },
+];
+
+menu_korean = [
+  {
+    name: '팥빙수',
+    ingredient: ['얼음', '팥', '연유'],
+    cost: 100
+  },
+  {
+    name: '인절미 빙수',
+    ingredient: ['얼음', '인절미', '연유'],
+    cost: 100
+  },
+  {
+    name: '초코 빙수',
+    ingredient: ['얼음', '초코 아이스크림', '초코시럽'],
+    cost: 100
+  }
+];
+
+// 처음 로드할 때, 창 크기 변경할 때 캔버스 크기 조절
+window.addEventListener("load", () => {
+  resizeCanvas()
+});
+window.addEventListener("resize", resizeCanvas);
 
 function resizeCanvas() {
   canvas.width = window.innerWidth - 1;
@@ -70,111 +161,97 @@ function resizeCanvas() {
   drawBackground();
 }
 
-// 처음 로드할 때, 창 크기 변경할 때 캔버스 크기 조절
-window.addEventListener("load", () => {
-  resizeCanvas()
-  paddle.x = canvas.width / 2 - (canvas.width / 6) / 2;
-  ball.x = canvas.width / 2
-});
-window.addEventListener("resize", resizeCanvas);
+window.onload = () => {
+  run();
+};
 
-const ingredientNoNone = ['ice', 'redbean', 'injeolmi', 
-                          'icecream_cho','sirup_cho',
-                          'sirup_milk',
-                           ];
-const itemPath = '../../../imgs/png/';
-itemImgs = ingredientNoNone.map( name => {
-  const img = new Image();
-  img.src = itemPath + name + imgExt;
-  return img;
+function run() {
+  init();             // init() 안 해줬어서 첫 실행이 이상했음!
+
+  cvs.fillStyle = 'black';
+  cvs.font = "72px 'Gothic A1'";
+  cvs.textAlign = "center";
+  cvs.textBaseline = "middle";
+
+  cvs.fillText('Level 1', canvas.width / 2, canvas.height / 2)
+
+  roundStartSound.currentTime = 0;
+  roundStartSound.play().catch(e => console.warn('roundStartSound error', e));
+
+  setTimeout(() => {
+    drawBackground();
+    startCount();
+  }, 1000)
+
+  function startCount() {
+    let y = drawStartPage();
+
+    i = 3;
+    const countdown = setInterval(() => {
+      drawBackground();
+      drawStartPage();
+      drawCountDown(i--, y);
+
+      if (i < 0) clearInterval(countdown);
+    }, 1000);
+
+    setTimeout(()=>{
+      drawBackground();
+
+      cvs.fillStyle = 'black';
+      cvs.font = "40px 'Gothic A1'";
+      cvs.textAlign = "center";
+      cvs.textBaseline = "middle";
+
+      cvs.fillText('Start !', canvas.width / 2, canvas.height / 2);
+    }, 4000);
+
+    setTimeout(()=>{
+      start();
+    }, 5000);
+  }
 }
-)
-
-let topBrickImg = null;
-let topBrickTimer = null;
 
 function init() {
   startTimer();
 
+  const urlParams = new URLSearchParams(window.location.search);
+  ballSize = parseInt(urlParams.get('size'), 10) / 10 || 1;
+  ballSpeed = parseInt(urlParams.get('speed'), 10) || 4;
+
+
   ball = {
     x: canvas.width / 2,
-    y: canvas.height - 30,
-    dx: 4,
-    dy: -4,
-    radius: 8
+    y: canvas.height - 30 * ballSize,
+    dx: ballSpeed,
+    dy: -ballSpeed,
+    radius: 8 * ballSize
   };
 
   paddle = {
-    height: 10,
-    width: canvas.width / 6,
+    height: 15,
+    width: canvas.width / 7,
     x: canvas.width / 2
   };
 
-  const rowColors = ['red', 'yellow', 'green', 'blue', 'purple'];
-
   bricks = [];
-  for (let c = 0; c < brickCols; c++) {
-    bricks[c] = [];
-    for (let r = 0; r < brickRows; r++) {
-      const color = rowColors[r % rowColors.length];
+  initBricks();
 
-      let imgIdx = Math.floor(Math.random()*ingredients.length);
-      //재료마다 점수 조정할 때 사용하면 좋을 거 같음
-      const points = color === 'red' ? 40 : color === 'blue' ? 30 : color === 'yellow' ? 20 : color === 'green' ? 10 : 5;
-      bricks[c][r] = { x: 0, y: 0, status: 1, color: color, points: points, imgIdx: imgIdx, ingredient: ingredients[imgIdx] };
-    }
-  }
-
-  brickImgs = ingredients.map( name => {
-      const img = new Image();
-      img.src = brickPath + name + imgExt;
-      return img;
-    }
-  )
-
-  menu = [
-    {
-      name: 'redbean',
-      ingredient: ['ice', 'redbean', 'sirup_milk'],
-      cost: 100
-    },
-    {
-      name: 'injeolmi',
-      ingredient: ['ice', 'injeolmi', 'sirup_milk'],
-      cost: 100
-    },
-    {
-      name: 'choco',
-      ingredient: ['ice', 'icecream_cho', 'sirup_cho'],
-      cost: 100
-    },
-  ];
-
-  menu_korean = [
-    {
-      name: '팥빙수',
-      ingredient: ['얼음', '팥', '연유'],
-      cost: 100
-    },
-    {
-      name: '인절미 빙수',
-      ingredient: ['얼음', '인절미', '연유'],
-      cost: 100
-    },
-    {
-      name: '초코 빙수',
-      ingredient: ['얼음', '초코 아이스크림', '초코시럽'],
-      cost: 100
-    }
-  ];
-
-  newMenu();
   isGameover = false;
+
   document.getElementById("gameover").style.display = "none";
   document.getElementById("win").style.display = "none";
 }
 
-init();
+function initBricks() {
+  for (let c = 0; c < brickCols; c++) {
+    bricks[c] = [];
+    for (let r = 0; r < brickRows; r++) {
+      let imgIdx = Math.floor(Math.random()*ingredients.length);
+      bricks[c][r] = { x: 0, y: 0, status: 1, imgIdx: imgIdx, ingredient: ingredients[imgIdx] };
+    }
+  }
+}
 
 document.addEventListener("keydown", keyDown, false);
 document.addEventListener("keyup", keyUp, false);
@@ -185,10 +262,6 @@ function keyDown(e) {
   } else if (e.key === "Left" || e.key === "ArrowLeft") {
     lPressed = true;
   }
-  else if (!gameStarted && e.code === "Space") {
-      e.preventDefault(); // 스크롤 방지 (중요)
-      start();
-    }
 }
 
 function keyUp(e) {
@@ -198,8 +271,6 @@ function keyUp(e) {
     lPressed = false;
   }
 }
-
-
 
 function collisionCheck() {
   for (let c = 0; c < brickCols; c++) {
@@ -241,13 +312,17 @@ function collisionCheck() {
 
           checkMenu(b);
           b.status = 0;
+          brickSound.currentTime =0;
+          brickSound.play();
           console.log(b.ingredient+"닿음");
           console.log(matchedIngredients);
 
           showTopBrick(itemImgs[b.imgIdx-1]); //닿은 블록의 이미지를 전달
 
-          if (checkWin()) {
-            win();
+          if (checkBrickClear()) {
+            // win();
+            initBricks();
+            drawBricks();
           }
         }
       }
@@ -320,7 +395,6 @@ function drawBricks() {
     }
   }
 }
-
 function draw() {
   cvs.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -342,11 +416,13 @@ function draw() {
   if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
     ball.dx = -ball.dx;
   }
-  if (ball.y + ball.dy < ball.radius) {
+  if (ball.y + ball.dy < ball.radius + topSpace) {
     ball.dy = -ball.dy;
   } else if (ball.y + ball.dy > canvas.height - ball.radius - paddle.height - 10) {
     if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
       ball.dy = -ball.dy;
+      barSound.currentTime=0;
+      barSound.play();
     } else {
       gameOver();
       if (isGameover) {
@@ -360,9 +436,9 @@ function draw() {
   ball.y += ball.dy;
 
   if (rPressed && paddle.x < canvas.width - paddle.width) {
-    paddle.x += 7;
+    paddle.x += paddleSpeed;
   } else if (lPressed && paddle.x > 0) {
-    paddle.x -= 7;
+    paddle.x -= paddleSpeed;
   }
 
   requestAnimationFrame(draw);
@@ -371,22 +447,31 @@ function draw() {
 function start() {
   gameStarted = true;
   life = 3;
-  if (isGameover) {
-    init();
-  }
+  if (isGameover) init();
+
+  roundLoopSound.currentTime = 0;
+  roundLoopSound.play();
+
   draw();
 }
 
 function gameOver() {
   console.log('게임오버 호출')
   isGameover = true;
+
+ 
   if (--life != 0) {
     console.log('life' + life);
     isGameover = false;
     ball.x = canvas.width / 2;
-    ball.y = canvas.height - 30;
+    ball.y = canvas.height - 30 * ballSize;
     paddle.x = (canvas.width - canvas.width/6) /2
     return;
+  } else{
+    roundLoopSound.pause();
+    roundLoopSound.currentTime = 0;
+    gameOverSound.currentTime = 0;
+    gameOverSound.play();
   }
   draw();     
   document.getElementById("gameover").style.display = "block";
@@ -394,9 +479,10 @@ function gameOver() {
   document.getElementById("gameover").style.height = canvas.height -35 + 'px';
   gameStarted = false;
   clearInterval(timerInterval);
+  $('#gameover .score').text('Score: ' + money);
 }
 
-function checkWin() {
+function checkBrickClear() {
   for (let c = 0; c < brickCols; c++) {
     for (let r = 0; r < brickRows; r++) {
       if (bricks[c][r].status === 1) {
@@ -409,6 +495,10 @@ function checkWin() {
 
 function win() {
   isGameover = true;
+
+  roundLoopSound.pause();
+  roundLoopSound.currentTime = 0;
+
   document.getElementById("win").style.display = "block";
   document.getElementById("win").style.width = canvas.width - topSpace/2 + 'px';
   document.getElementById("win").style.height = canvas.height - topSpace/2 + 'px';
@@ -437,8 +527,8 @@ function newMenu() {
 function checkMenu(brick) {
   //현재 메뉴의 재료 배열
   const ingredients = menu[order].ingredient;
-  
-  if(ingredients.includes(brick.ingredient) && !matchedIngredients.has(brick)){
+
+  if(ingredients.includes(brick.ingredient) && !matchedIngredients.has(brick.ingredient)){
     matchedIngredients.add(brick.ingredient);
     for(let i = 0; i<orderIngredientsArr; i++){
       if(brick.ingredient == orderIngredientsNames[i]){
@@ -448,9 +538,12 @@ function checkMenu(brick) {
   }
   if(matchedIngredients.size === ingredients.length){
     money += menu[order].cost;
+    scoreSound.currentTime =0;
+    scoreSound.play();
     newMenu();
   }
 }
+
 function showTopBrick(img){
   topBrickImg = img;
   if (topBrickTimer) clearTimeout(topBrickTimer);
@@ -460,11 +553,65 @@ function showTopBrick(img){
   }, 1000);
 }
 
-const lifeImg = new Image();
-lifeImg.src = ImgPath + 'icon/heart.PNG';
+function drawBall() {
+  if (ballImg.complete) {
+    // 이미지 중심이 ball.x, ball.y가 되도록 조정
+    cvs.drawImage(
+      ballImg,
+      ball.x - ball.radius,
+      ball.y - ball.radius,
+      ball.radius * 2,
+      ball.radius * 2
+    );
+  } else {
+    // 이미지가 아직 로딩되지 않았을 경우 fallback으로 파란 원 그리기
+    cvs.beginPath();
+    cvs.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    cvs.fillStyle = "blue";
+    cvs.fill();
+    cvs.closePath();
+  }
+}
 
-const moneyImg = new Image();
-moneyImg.src = ImgPath + 'icon/money.PNG';
+function drawPaddle() {
+  if (paddleImg.complete) {
+    cvs.drawImage(
+      paddleImg,
+      paddle.x,
+      canvas.height - paddle.height - 10,
+      paddle.width,
+      paddle.height
+    );
+  }
+  else {
+    cvs.beginPath();
+    cvs.rect(paddle.x, canvas.height - paddle.height - 10, paddle.width, paddle.height);
+    cvs.fillStyle = "rgb(91,162,209)";
+    cvs.fill();
+    cvs.closePath();
+  }
+}
+
+function drawBricks() {
+  for (let c = 0; c < brickCols; c++) {
+    for (let r = 0; r < brickRows; r++) {
+      if (bricks[c][r].status === 1) {
+        const brickX = c * (brickWidth + brickPadding) + brickLeft;
+        const brickY = r * (brickHeight + brickPadding) + topSpace + 12.5;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
+
+        cvs.drawImage(
+          brickImgs[bricks[c][r].imgIdx],
+          bricks[c][r].x,
+          bricks[c][r].y,
+          brickWidth,
+          brickHeight
+        )
+      }
+    }
+  }
+}
 
 function drawLife() {
   for (let i = 0; i < life; i++) {
@@ -520,6 +667,29 @@ function drawMenu() {
   const timerY = barY + barHeight + 32;  // 메뉴 바 아래 + 글자 높이만큼 떨어진 위치
   cvs.font = "30px 'Noto Sans KR'";
   cvs.fillText(`⏰ ${timerText}`,canvas.width /15, timerY );
+
+  let startX = barX + (barWidth - cvs.measureText(menuText).width) / 2;
+  drawMenuIcon(startX, barY, barHeight);
+}
+
+function drawMenuIcon(startX, barY, barHeight) {
+  const iconX = startX + cvs.measureText(menu_korean[order].name + ' : ').width;
+  const iconY = barY * 4 + barHeight / 2;
+
+  menu[order].ingredient.forEach( (element, index) => {
+    if (matchedIngredients.has(element)) {
+      const imgIdx = ingredientNoNone.indexOf(element);
+      const icon = itemImgs[imgIdx];
+      var padding = 0;
+      for (let i=0; i<index; i++) {
+        padding += cvs.measureText(menu_korean[order].ingredient[i] + ' + ').width;
+      }
+      if (index != 0) {padding += cvs.measureText(' + ').width};
+      padding += cvs.measureText(menu_korean[order].ingredient[index]).width / 2;
+      cvs.drawImage(icon, iconX + padding, iconY, 40, 40);
+    }
+  }
+  )
 }
 
 function drawBackground() {
@@ -549,4 +719,43 @@ function updateTimerDisplay(){
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
   timerText = `${minutes} : ${seconds.toString().padStart(2,"0")}`;
+function drawStartPage() {
+  const { name, ingredient } = menu_korean[order];
+  const ingText = ingredient.join('  +  ');
+  const menuText = `${name}  :  ${ingText}`;
+
+  cvs.strokeStyle = 'black';     // 테두리 색
+  cvs.lineWidth = 1;           // 테두리 두께
+
+  const barWidth = barSize * 1.5;
+  const barHeight = barSize / 18 * 1.5;
+
+  const barX = canvas.width / 2 - barWidth / 2;
+  const barY = canvas.height / 2 - barHeight / 2;
+
+  cvs.strokeRect(barX, barY, barWidth, barHeight);   // 테두리만 있는 직사각형 그리기 (x, y, width, height)
+  
+  cvs.fillStyle = "black";
+  cvs.font = "40px 'Noto Sans KR'";
+  cvs.textAlign = "center";
+  cvs.textBaseline = "middle";
+
+  const textX = canvas.width / 2;
+  const textY = barY + barHeight / 2;
+
+  cvs.fillText(menuText, textX, textY);
+
+  return barY - 40;
+}
+
+function drawCountDown(n, t_y) {
+  cvs.fillStyle = "black";
+  cvs.font = "40px 'Gothic A1'";
+  cvs.textAlign = "center";
+  cvs.textBaseline = "middle";
+
+  const textX = canvas.width / 2;
+  const textY = t_y;
+
+  cvs.fillText(n, textX, textY);
 }
