@@ -1,4 +1,3 @@
-const barSound = document.getElementById("bar-sound");
 const gameOverSound = document.getElementById("gameover-sound");
 const scoreSound = document.getElementById("score-sound");
 const brickSound = document.getElementById("brick-sound");
@@ -418,8 +417,6 @@ function draw() {
   } else if (ball.y + ball.dy > canvas.height - ball.radius - paddle.height - 10) {
     if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
       ball.dy = -ball.dy;
-      barSound.currentTime=0;
-      barSound.play();
     } else {
       gameOver();
       if (isGameover) {
@@ -700,14 +697,14 @@ function drawBackground() {
 }
 
 function startTimer(){
-  timeLeft = 180;
+  timeLeft = 10;
   timerInterval = setInterval(()=>{
     timeLeft --;
     updateTimerDisplay();
 
     if(timeLeft <=0){
       clearInterval(timerInterval);
-      gameOver();
+      win();
     }
   },1000);
 }
