@@ -300,9 +300,9 @@ button{
 	gap: 300px;
 }
 
-#level1:hover { content: url("Shaved Ice/logo/1_h.png"); transform: scale(1.1);}
-#level2:hover { content: url("Shaved Ice/logo/2_h.png"); transform: scale(1.1); }
-#level3:hover { content: url("Shaved Ice/logo/3_h.png"); transform: scale(1.1); }
+#level1:hover { content: url("../imgs/logo/1_h.png"); transform: scale(1.1);}
+#level2:hover { content: url("../imgs/logo/2_h.png"); transform: scale(1.1); }
+#level3:hover { content: url("../imgs/logo/3_h.png"); transform: scale(1.1); }
 
 .level-btn {
   width: 110px;       

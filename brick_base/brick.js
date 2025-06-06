@@ -2,7 +2,7 @@ const canvas = document.getElementById("canvas");
 const cvs = canvas.getContext("2d");
 
 const ballImage = new Image();
-ballImage.src = "Shaved Ice/icon/ball.png";
+ballImage.src = "../imgs/icon/ball.png";
 
 let ball, paddle, bricks;
 let rPressed = false;
