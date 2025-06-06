@@ -523,8 +523,8 @@ function win() {
   clearSound.currentTime =0;
   clearSound.play();
   document.getElementById("win").style.display = "block";
-  document.getElementById("win").style.width = canvas.width -35 + 'px';
-  document.getElementById("win").style.height = canvas.height -35  + 'px';
+  document.getElementById("win").style.width = canvas.width - 35 + 'px';
+  document.getElementById("win").style.height = canvas.height - 35  + 'px';
 
   clearInterval(timerInterval);
 }
