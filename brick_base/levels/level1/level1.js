@@ -711,7 +711,7 @@ function drawFullBackground() {
 }
 
 function startTimer(){
-  timeLeft = 10;
+  timeLeft = 66;
   timerInterval = setInterval(()=>{
     timeLeft --;
     updateTimerDisplay();
