@@ -77,3 +77,24 @@ button {
 	top: 60%;
 	left: 40%;
   }
+
+  #forStart{
+  	position: fixed;
+  	width: 100vw;
+  	height: 100vh;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+  	font-size: 40px;
+  	color: black;
+  	font-family: 'Noto Sans KR';
+  	text-align: center;
+  }
+
+  .background{
+  	position: absolute;
+  	top: 0;
+  	left: 0;
+  	width: 100vw;
+  	height: 100vh;
+  }

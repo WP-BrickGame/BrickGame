@@ -1,3 +1,13 @@
+const barSound = document.getElementById("bar-sound");
+const gameOverSound = document.getElementById("gameover-sound");
+const scoreSound = document.getElementById("score-sound");
+const brickSound = document.getElementById("brick-sound");
+const clearSound = document.getElementById("clear-sound");
+
+const roundStartSound = document.getElementById("round-start-sound");
+const roundLoopSound = document.getElementById("round-loop-sound");
+
+
 // 사용자 선택
 var ballSize = 1;
 var ballSpeed = 4;
@@ -181,9 +191,25 @@ window.addEventListener("load", () => {
 
 window.addEventListener("resize", resizeCanvas);
 
-window.onload = () => {
-  run();
-};
+// 화면 클릭하면 run
+let Started = false;
+window.addEventListener("click", ()=>{
+  if(!Started){
+    Started = true;
+
+    const forStart = document.getElementById("forStart");
+    const background = document.querySelector(".background");
+    if(forStart) {
+      forStart.style.display = "none";
+      background.style.display = "none";
+    }
+
+    roundStartSound.currentTime = 0;
+    roundStartSound.play();
+
+    run();
+  }
+})
 
 function run() {
   init();             // init() 안 해줬어서 첫 실행이 이상했음!
@@ -195,6 +221,9 @@ function run() {
   cvs.textBaseline = "middle";
 
   cvs.fillText('Level 3', canvas.width / 2, canvas.height / 2)
+
+  roundStartSound.currentTime = 0;
+  roundStartSound.play();
 
   setTimeout(() => {
     drawFullBackground();
@@ -333,7 +362,10 @@ function collisionCheck() {
             ball.dy = -ball.dy;
           }
 
-          checkMenu(b);
+          if(checkMenu(b)){
+            brickSound.currentTime =0;
+            brickSound.play();
+          }
           b.status = 0;
           console.log(b.ingredient+"닿음");
           console.log(matchedIngredients);
@@ -379,6 +411,8 @@ function draw() {
   } else if (ball.y + ball.dy > canvas.height - ball.radius - paddle.height - 10) {   // 공이 패들 높이에 닿은 경우
     if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {    // 패들에 부딪힌 경우
       ball.dy = -ball.dy;
+      barSound.currentTime=0;
+      barSound.play();
     } else {
       gameOver();
       if (isGameover) {
@@ -403,6 +437,8 @@ function start() {
   gameStarted = true;
   life = 3;
   if (isGameover) init();
+  roundLoopSound.currentTime = 0;
+  roundLoopSound.play();
   draw();
 }
 
@@ -414,6 +450,10 @@ function gameOver() {
     ball.y = canvas.height - 30 * ballSize;
     paddle.x = (canvas.width - canvas.width/6) /2
     return;
+  }else{
+    roundLoopSound.pause();
+    gameOverSound.currentTime = 0;
+    gameOverSound.play();
   }
   isGameover = true;
   draw();       // 왜 남은 하트 한 개 안 없어짐? ㅇㅎ
@@ -437,6 +477,9 @@ function checkBrickClear() {
 
 function win() {
   isGameover = true;
+
+  roundLoopSound.pause();
+
   document.getElementById("win").style.display = "block";
   document.getElementById("win").style.width = canvas.width - topSpace/2 + 'px';
   document.getElementById("win").style.height = canvas.height - topSpace/2 + 'px';
@@ -450,18 +493,23 @@ function newMenu() {
   console.log(menu[order.menu].ingredient);
 }
 
+//true, false 반환하도록 수정
 function checkMenu(brick) {
   //현재 메뉴의 재료 배열
   const ingredients = [...menu[order.menu].ingredient, toppings[order.topping]];
 
   if(ingredients.includes(brick.ingredient) && !matchedIngredients.has(brick.ingredient)) {
     matchedIngredients.add(brick.ingredient);
-  }
 
-  if(matchedIngredients.size === ingredients.length) {
-    money += menu[order.menu].cost;
-    newMenu();
+    if(matchedIngredients.size === ingredients.length) {
+      money += menu[order.menu].cost;
+      scoreSound.currentTime =0;
+      scoreSound.play();
+      newMenu();
+    }
+    return true;
   }
+  return false;  
 }
 
 function showTopBrick(img){
@@ -502,6 +550,8 @@ function startTimer(){
 
     if(timeLeft <=0){
       clearInterval(timerInterval);
+      clearSound.currentTime =0;
+      clearSound.play();
       win();
     }
   },1000);
