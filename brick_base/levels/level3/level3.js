@@ -591,26 +591,28 @@ function drawMenuIcon(startX, barY, barHeight) {
       const icon = itemImgs[imgIdx];
       padding = 0;
       for (let i=0; i<index; i++) {
-        padding += cvs.measureText(menu_korean[order.menu].ingredient[i] + ' + ').width;
+        padding += cvs.measureText(menu_korean[order.menu].ingredient[i]).width;
+        padding += cvs.measureText(' + ').width;
+        padding += 10;
       }
-      if (index != 0) {padding += cvs.measureText(' + ').width};
       padding += cvs.measureText(menu_korean[order.menu].ingredient[index]).width / 2;
-      cvs.drawImage(icon, iconX + padding, iconY, 40, 40);
+      cvs.drawImage(icon, iconX + padding, iconY + 5, 40, 40);
     }
   }
   )
   padding = 0;
   for (let i=0; i<menu_korean[order.menu].ingredient.length; i++) {
-        padding += cvs.measureText(menu_korean[order.menu].ingredient[i]).width;
-      }
+    padding += cvs.measureText(menu_korean[order.menu].ingredient[i]).width;
+    padding += cvs.measureText(' + ').width;
+    padding += 10;
+  }
 
   if (matchedIngredients.has(toppings[order.topping])) {
     padding += cvs.measureText(toppings_korean[order.topping]).width / 2;
-
     const imgIdx = ingredientNoNone.indexOf(toppings[order.topping]);
     const icon = itemImgs[imgIdx];
 
-    cvs.drawImage(icon, iconX + padding, iconY, 40, 40);
+    cvs.drawImage(icon, iconX + padding, iconY + 5, 40, 40);
   }
 }
 
