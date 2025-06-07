@@ -236,18 +236,19 @@ function run() {
 
 function init() {
   startTimer();
-    const urlParams = new URLSearchParams(window.location.search);
+  
+  const urlParams = new URLSearchParams(window.location.search);
 
-    const urlSize = urlParams.get('size');
-    const urlSpeed = urlParams.get('speed');
+  const urlSize = urlParams.get('size');
+  const urlSpeed = urlParams.get('speed');
 
-    const savedSize = localStorage.getItem('ballSize');
-    const savedSpeed = localStorage.getItem('ballSpeed');
+  const savedSize = localStorage.getItem('ballSize');
+  const savedSpeed = localStorage.getItem('ballSpeed');
 
-    ballSize = (urlSize ? parseInt(urlSize, 10) : savedSize ? parseInt(savedSize, 10) : 10) / 10;
-    ballSpeed = urlSpeed ? parseInt(urlSpeed, 10) : savedSpeed ? parseInt(savedSpeed, 10) : 4;
+  ballSize = (urlSize ? parseInt(urlSize, 10) : savedSize ? parseInt(savedSize, 10) : 10) / 10;
+  ballSpeed = urlSpeed ? parseInt(urlSpeed, 10) : savedSpeed ? parseInt(savedSpeed, 10) : 4;
 
-    console.log('ballSize:', ballSize, 'ballSpeed:', ballSpeed);
+  console.log('ballSize:', ballSize, 'ballSpeed:', ballSpeed);
 
   ball = {
     x: canvas.width / 2,
