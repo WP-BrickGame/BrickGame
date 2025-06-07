@@ -8,8 +8,8 @@ const roundLoopSound = document.getElementById("round-loop-sound");
 
 
 // 사용자 선택
-var ballSize = 1;
-var ballSpeed = 4;
+var ballSize = 0;
+var ballSpeed = 0;
 
 // 패들 속도
 var paddleSpeed = 12;
@@ -231,11 +231,20 @@ function run() {
 function init() {
   startTimer();
 
-  const urlParams = new URLSearchParams(window.location.search);
-  ballSize = parseInt(urlParams.get('size'), 10) / 10 || 1;
-  ballSpeed = parseInt(urlParams.get('speed'), 10) || 4;
+    const urlParams = new URLSearchParams(window.location.search);
 
-  ball = {
+    const urlSize = urlParams.get('size');
+    const urlSpeed = urlParams.get('speed');
+
+    const savedSize = localStorage.getItem('ballSize');
+    const savedSpeed = localStorage.getItem('ballSpeed');
+
+    ballSize = (urlSize ? parseInt(urlSize, 10) : savedSize ? parseInt(savedSize, 10) : 10) / 10;
+    ballSpeed = urlSpeed ? parseInt(urlSpeed, 10) : savedSpeed ? parseInt(savedSpeed, 10) : 4;
+
+    console.log('ballSize:', ballSize, 'ballSpeed:', ballSpeed);
+  
+    ball = {
     x: canvas.width / 2,
     y: canvas.height - 30 * ballSize,
     dx: ballSpeed,
