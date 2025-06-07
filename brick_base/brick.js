@@ -32,6 +32,70 @@ function goToLevel3(size, speed) {
   location.href=`./levels/level3/level3.html?size=${size}&speed=${speed}`;
 }
 
+// document.addEventListener("DOMContentLoaded", function () {
+//   const sizeSlider = document.getElementById("sizeRange");
+//   const sizeOutput = document.getElementById("size-output");
+
+//   const speedSlider = document.getElementById("speedRange");
+//   const speedOutput = document.getElementById("speed-output");
+
+//   const ballIcon = document.querySelector(".ball-icon");
+
+//   function applySize(value) {
+//     sizeOutput.textContent = value;
+//     const radius = parseInt(value);
+//     if (ball) ball.radius = radius;
+//     if (ballIcon) {
+//       ballIcon.style.width = radius * 2 + "px";
+//       ballIcon.style.height = radius * 2 + "px";
+//     }
+//   }
+
+//   function applySpeed(value) {
+//     speedOutput.textContent = value;
+//     const speed = parseInt(value);
+//     if (ball) {
+//       const angle = Math.atan2(ball.dy, ball.dx);
+//       ball.dx = speed * Math.cos(angle);
+//       ball.dy = -Math.abs(speed * Math.sin(angle)); // 항상 위로
+//     }
+//   }
+
+//   applySize(sizeSlider.value);
+//   applySpeed(speedSlider.value);
+
+//   sizeSlider.addEventListener("input", () => applySize(sizeSlider.value));
+//   speedSlider.addEventListener("input", () => applySpeed(speedSlider.value));
+
+//   //배경음악 -> 브라우저 정책 위반.? 으로 안됨.
+//   // const bgm = document.getElementById("main-bgm");
+//   // bgm.play();
+
+//   // 배경음악 재생
+//   const bgm = document.getElementById("main-bgm");
+//   const bgmCheck = document.getElementById("bgm-check");
+
+//   bgmCheck.addEventListener("change", () =>{
+//     if(bgmCheck.checked){
+//       bgm.muted = false;
+//       bgm.play();
+//     } else{
+//       bgm.pause();
+//     }
+//   });
+
+//   //버튼 클릭 시 효과음 재생
+//   const buttonSound = document.getElementById("button-sound");
+
+//   document.querySelectorAll("button, .level-btn, .back-button").forEach(btn => {
+//     btn.addEventListener("click", () => {
+//       buttonSound.currentTime = 0;
+//       buttonSound.play();
+//     });
+//   });
+
+// });
+
 document.addEventListener("DOMContentLoaded", function () {
   const sizeSlider = document.getElementById("sizeRange");
   const sizeOutput = document.getElementById("size-output");
@@ -41,10 +105,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const ballIcon = document.querySelector(".ball-icon");
 
+  const bgm = document.getElementById("main-bgm");
+  const bgmCheck = document.getElementById("bgm-check");
+
+  // 로컬스토리지에서 값 불러오기
+  const savedSize = localStorage.getItem("ballSize");
+  const savedSpeed = localStorage.getItem("ballSpeed");
+  const savedBgmOn = localStorage.getItem("bgmOn");
+
+  // 적용 함수
   function applySize(value) {
     sizeOutput.textContent = value;
+    localStorage.setItem("ballSize", value);
     const radius = parseInt(value);
-    if (ball) ball.radius = radius;
+    if (typeof ball !== 'undefined') ball.radius = radius;
     if (ballIcon) {
       ballIcon.style.width = radius * 2 + "px";
       ballIcon.style.height = radius * 2 + "px";
@@ -53,45 +127,53 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function applySpeed(value) {
     speedOutput.textContent = value;
+    localStorage.setItem("ballSpeed", value);
     const speed = parseInt(value);
-    if (ball) {
+    if (typeof ball !== 'undefined') {
       const angle = Math.atan2(ball.dy, ball.dx);
       ball.dx = speed * Math.cos(angle);
       ball.dy = -Math.abs(speed * Math.sin(angle)); // 항상 위로
     }
   }
 
+  // 저장된 값이 있으면 적용, 없으면 초기값
+  sizeSlider.value = savedSize || sizeSlider.value;
+  speedSlider.value = savedSpeed || speedSlider.value;
   applySize(sizeSlider.value);
   applySpeed(speedSlider.value);
 
+  // 슬라이더 조절 시
   sizeSlider.addEventListener("input", () => applySize(sizeSlider.value));
   speedSlider.addEventListener("input", () => applySpeed(speedSlider.value));
 
-  //배경음악 -> 브라우저 정책 위반.? 으로 안됨.
-  // const bgm = document.getElementById("main-bgm");
-  // bgm.play();
+  // 배경음악 체크박스 상태 불러오기
+  if (savedBgmOn === "true") {
+    bgmCheck.checked = true;
+    bgm.muted = false;
+    bgm.play().catch(() => {}); // 브라우저 정책으로 막힐 수 있으므로 무시
+  } else {
+    bgmCheck.checked = false;
+    bgm.pause();
+  }
 
-  // 배경음악 재생
-  const bgm = document.getElementById("main-bgm");
-  const bgmCheck = document.getElementById("bgm-check");
-
-  bgmCheck.addEventListener("change", () =>{
-    if(bgmCheck.checked){
+  // 체크박스 변경 시
+  bgmCheck.addEventListener("change", () => {
+    if (bgmCheck.checked) {
+      localStorage.setItem("bgmOn", "true");
       bgm.muted = false;
-      bgm.play();
-    } else{
+      bgm.play().catch(() => {});
+    } else {
+      localStorage.setItem("bgmOn", "false");
       bgm.pause();
     }
   });
 
-  //버튼 클릭 시 효과음 재생
+  // 버튼 클릭 시 효과음 재생
   const buttonSound = document.getElementById("button-sound");
-
   document.querySelectorAll("button, .level-btn, .back-button").forEach(btn => {
     btn.addEventListener("click", () => {
       buttonSound.currentTime = 0;
       buttonSound.play();
     });
   });
-
 });
