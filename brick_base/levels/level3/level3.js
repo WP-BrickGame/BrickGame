@@ -624,7 +624,7 @@ function drawMoney() {
   )
   cvs.fillStyle = "black";
   cvs.font = "45px 'Noto Sans KR'";
-  cvs.fillText(money, canvas.width - moneySize * 2.5, moneySize);
+  cvs.fillText(money, canvas.width - moneySize * 2.0, moneySize -15);
 }
 
 function drawMenu() {

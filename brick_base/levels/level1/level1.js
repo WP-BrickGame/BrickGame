@@ -345,7 +345,6 @@ function collisionCheck() {
           showTopBrick(itemImgs[b.imgIdx-1]); //닿은 블록의 이미지를 전달
 
           if (checkBrickClear()) {
-            // win();
             initBricks();
             drawBricks();
           }
@@ -472,7 +471,7 @@ function start() {
 }
 
 function gameOver() {
-  console.log('게임오버 호출')
+  console.log('게임오버 호출');
   isGameover = true;
 
  
@@ -521,6 +520,7 @@ function win() {
 
   $('#win .score').text('Score : ' + money);
 }
+
 
 function newMenu() {
   order = Math.floor(Math.random()*menu.length);
@@ -650,7 +650,7 @@ function drawMoney() {
   )
   cvs.fillStyle = "black";
   cvs.font = "45px 'Noto Sans KR'";
-  cvs.fillText(money, canvas.width - moneySize * 2.5, moneySize);
+  cvs.fillText(money, canvas.width - moneySize * 2.0, moneySize -15);
 }
 
 function drawMenu() {
@@ -728,6 +728,7 @@ function drawFullBackground() {
 }
 
 function startTimer(){
+  timeLeft = 66;
   timerInterval = setInterval(()=>{
     timeLeft --;
     updateTimerDisplay();
