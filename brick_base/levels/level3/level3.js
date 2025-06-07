@@ -274,6 +274,8 @@ function init() {
 
   console.log('ballSize:', ballSize, 'ballSpeed:', ballSpeed);
 
+  money = 0;
+
   ball = {
     x: canvas.width / 2,
     y: canvas.height - 30 * ballSize,

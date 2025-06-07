@@ -243,6 +243,8 @@ function init() {
     ballSpeed = urlSpeed ? parseInt(urlSpeed, 10) : savedSpeed ? parseInt(savedSpeed, 10) : 4;
 
     console.log('ballSize:', ballSize, 'ballSpeed:', ballSpeed);
+
+    money = 0;
   
     ball = {
     x: canvas.width / 2,
