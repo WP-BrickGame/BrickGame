@@ -13,6 +13,9 @@ var ballSpeed = 0;
 // 패들 속도
 var paddleSpeed = 12;
 
+// 패들 크기 - 작을수록 큼
+var paddleRatio = 6;
+
 // 목숨
 let life = 3;
 
@@ -180,7 +183,7 @@ function resizeCanvas() {
   canvas.width = window.innerWidth - 1;
   canvas.height = window.innerHeight - 1;
 
-  paddle.width = canvas.width / 7,
+  paddle.width = canvas.width / paddleRatio,
 
   drawBackground();
 }
@@ -262,7 +265,7 @@ function init() {
 
   paddle = {
     height: 15,
-    width: canvas.width / 7,
+    width: canvas.width / paddleRatio,
     x: canvas.width / 2
   };
 
