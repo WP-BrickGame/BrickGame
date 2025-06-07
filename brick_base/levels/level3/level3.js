@@ -546,7 +546,7 @@ function startTimer(){
     timeLeft --;
     updateTimerDisplay();
 
-    if(timeLeft <=0){
+    if(timeLeft <=0 && isGameover === false){
       clearInterval(timerInterval);
       clearSound.currentTime =0;
       clearSound.play();
