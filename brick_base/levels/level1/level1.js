@@ -364,64 +364,6 @@ function collisionCheck() {
   }
 }
 
-function drawBall() {
-  if (ballImg.complete) {
-    // 이미지 중심이 ball.x, ball.y가 되도록 조정
-    cvs.drawImage(
-      ballImg,
-      ball.x - ball.radius,
-      ball.y - ball.radius,
-      ball.radius * 2 * ballSize,
-      ball.radius * 2 * ballSize
-    );
-  } else {
-    // 이미지가 아직 로딩되지 않았을 경우 fallback으로 빨간 원 그리기
-    cvs.beginPath();
-    cvs.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    cvs.fillStyle = "blue";
-    cvs.fill();
-    cvs.closePath();
-  }
-}
-function drawPaddle() {
-  if (paddleImg.complete) {
-    cvs.drawImage(
-      paddleImg,
-      paddle.x,
-      canvas.height - paddle.height - 10,
-      paddle.width,
-      paddle.height
-    );
-  }
-  else {
-    cvs.beginPath();
-    cvs.rect(paddle.x, canvas.height - paddle.height - 10, paddle.width, paddle.height);
-    cvs.fillStyle = "rgb(91,162,209)";
-    cvs.fill();
-    cvs.closePath();
-  }
-}
-
-function drawBricks() {
-  for (let c = 0; c < brickCols; c++) {
-    for (let r = 0; r < brickRows; r++) {
-      if (bricks[c][r].status === 1) {
-        const brickX = c * (brickWidth + brickPadding) + brickLeft;
-        const brickY = r * (brickHeight + brickPadding) + topSpace + 12.5;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-
-        cvs.drawImage(
-          brickImgs[bricks[c][r].imgIdx],
-          bricks[c][r].x,
-          bricks[c][r].y,
-          brickWidth,
-          brickHeight
-        )
-      }
-    }
-  }
-}
 function draw() {
   cvs.clearRect(0, 0, canvas.width, canvas.height);
 
