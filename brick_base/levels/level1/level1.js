@@ -1,4 +1,3 @@
-const barSound = document.getElementById("bar-sound");
 const gameOverSound = document.getElementById("gameover-sound");
 const scoreSound = document.getElementById("score-sound");
 const brickSound = document.getElementById("brick-sound");
@@ -31,9 +30,9 @@ let orderIngredientsNames = null;
 var ingNum = 0;
 
 //타이머
-let timeLeft = 180;
+let timeLeft = 66;
 let timerInterval = null;
-let timerText = "3 : 00";
+let timerText = "1 : 00";
 
 // 캔버스
 const canvas = document.getElementById("canvas");
@@ -440,8 +439,6 @@ function draw() {
   } else if (ball.y + ball.dy > canvas.height - ball.radius - paddle.height - 10) {
     if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
       ball.dy = -ball.dy;
-      barSound.currentTime=0;
-      barSound.play();
     } else {
       gameOver();
       if (isGameover) {
@@ -550,11 +547,7 @@ function checkMenu(brick) {
 
   if(ingredients.includes(brick.ingredient) && !matchedIngredients.has(brick.ingredient)){
     matchedIngredients.add(brick.ingredient);
-    for(let i = 0; i<orderIngredientsArr; i++){
-      if(brick.ingredient == orderIngredientsNames[i]){
-        drawMenu(); //이미지 전달
-      }
-    }
+
     if(matchedIngredients.size === ingredients.length){
       money += menu[order].cost;
       scoreSound.currentTime =0;
@@ -735,7 +728,6 @@ function drawFullBackground() {
 }
 
 function startTimer(){
-  timeLeft = 66;
   timerInterval = setInterval(()=>{
     timeLeft --;
     updateTimerDisplay();

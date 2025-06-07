@@ -1,4 +1,3 @@
-const barSound = document.getElementById("bar-sound");
 const gameOverSound = document.getElementById("gameover-sound");
 const scoreSound = document.getElementById("score-sound");
 const brickSound = document.getElementById("brick-sound");
@@ -28,9 +27,9 @@ let matchedIngredients = new Set();
 var ingNum = 0;
 
 //타이머
-let timeLeft = 180;
+let timeLeft = 66;
 let timerInterval = null;
-let timerText = "3 : 00";
+let timerText = "1 : 00";
 
 // 캔버스
 const canvas = document.getElementById("canvas");
@@ -411,8 +410,6 @@ function draw() {
   } else if (ball.y + ball.dy > canvas.height - ball.radius - paddle.height - 10) {   // 공이 패들 높이에 닿은 경우
     if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {    // 패들에 부딪힌 경우
       ball.dy = -ball.dy;
-      barSound.currentTime=0;
-      barSound.play();
     } else {
       gameOver();
       if (isGameover) {
@@ -545,7 +542,6 @@ function drawBall() {
 
 
 function startTimer(){
-  timeLeft = 66;
   timerInterval = setInterval(()=>{
     timeLeft --;
     updateTimerDisplay();
