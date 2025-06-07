@@ -236,11 +236,6 @@ function run() {
 
 function init() {
   startTimer();
-
-  // const urlParams = new URLSearchParams(window.location.search);
-  // ballSize = parseInt(urlParams.get('size'), 10) / 10 || 1;
-  // ballSpeed = parseInt(urlParams.get('speed'), 10) || 4;
-
     const urlParams = new URLSearchParams(window.location.search);
 
     const urlSize = urlParams.get('size');
