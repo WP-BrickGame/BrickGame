@@ -113,17 +113,17 @@ menu = [
   {
     name: 'strawberry',
     ingredient: ['ice', 'icecream_van', 'strawberry', 'sirup_str'],
-    cost: 100
+    cost: 200
   },
   {
     name: 'mango',
     ingredient: ['ice', 'icecream_van', 'mango', 'sirup_man'],
-    cost: 100
+    cost: 200
   },
   {
     name: 'greentea',
     ingredient: ['ice', 'icecream_tea', 'greentea', 'sirup_milk'],
-    cost: 100
+    cost: 200
   }
 ];
 
@@ -131,17 +131,17 @@ menu_korean = [
   {
     name: '딸기빙수',
     ingredient: ['얼음', '바닐라아이스크림', '딸기', '딸기시럽'],
-    cost: 100
+    cost: 200
   },
   {
     name: '망고빙수',
     ingredient: ['얼음', '바닐라아이스크림', '망고', '망고시럽'],
-    cost: 100
+    cost: 200
   },
   {
     name: '녹차빙수',
     ingredient: ['얼음', '녹차아이스크림', '녹찻잎', '연유'],
-    cost: 100
+    cost: 200
   }
 ];
 

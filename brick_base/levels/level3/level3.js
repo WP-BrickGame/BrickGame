@@ -117,27 +117,33 @@ brickImgs = ingredients.map( name => {
 menu = [
   {
     name: 'redbean',
-    ingredient: ['ice', 'redbean', 'sirup_milk']
+    ingredient: ['ice', 'redbean', 'sirup_milk'],
+    cost: 150
   },
   {
     name: 'injeolmi',
-    ingredient: ['ice', 'injeolmi', 'sirup_milk']
+    ingredient: ['ice', 'injeolmi', 'sirup_milk'],
+    cost: 150
   },
   {
     name: 'choco',
-    ingredient: ['ice', 'icecream_cho', 'sirup_choco']
+    ingredient: ['ice', 'icecream_cho', 'sirup_choco'],
+    cost: 150
   },
   {
     name: 'strawberry',
-    ingredient: ['ice', 'icecream_van', 'strawberry', 'sirup_str']
+    ingredient: ['ice', 'icecream_van', 'strawberry', 'sirup_str'],
+    cost: 250
   },
   {
     name: 'mango',
-    ingredient: ['ice', 'icecream_van', 'mango', 'sirup_man']
+    ingredient: ['ice', 'icecream_van', 'mango', 'sirup_man'],
+    cost: 250
   },
   {
     name: 'greentea',
-    ingredient: ['ice', 'icecream_tea', 'greentea', 'sirup_milk']
+    ingredient: ['ice', 'icecream_tea', 'greentea', 'sirup_milk'],
+    cost: 250
   }
 ];
 
